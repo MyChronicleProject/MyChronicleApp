@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChronicle.API", "MyChronicle.API\MyChronicle.API.csproj", "{B0766EF0-68A2-4D2E-9B25-17165856CAC5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8F74A505-3BB3-4465-80D0-5C8864333C36} = {8F74A505-3BB3-4465-80D0-5C8864333C36}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChronicle.Application", "MyChronicle.Application\MyChronicle.Application.csproj", "{8F74A505-3BB3-4465-80D0-5C8864333C36}"
+	ProjectSection(ProjectDependencies) = postProject
+		{088A0DF8-B83B-4FBA-8CD1-6103526FD258} = {088A0DF8-B83B-4FBA-8CD1-6103526FD258}
+		{BEA00523-08CF-4627-B7A0-FA89188F98E5} = {BEA00523-08CF-4627-B7A0-FA89188F98E5}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChronicle.Domain", "MyChronicle.Domain\MyChronicle.Domain.csproj", "{088A0DF8-B83B-4FBA-8CD1-6103526FD258}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChronicle.Infrastructure", "MyChronicle.Infrastructure\MyChronicle.Infrastructure.csproj", "{BEA00523-08CF-4627-B7A0-FA89188F98E5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{088A0DF8-B83B-4FBA-8CD1-6103526FD258} = {088A0DF8-B83B-4FBA-8CD1-6103526FD258}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B0766EF0-68A2-4D2E-9B25-17165856CAC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0766EF0-68A2-4D2E-9B25-17165856CAC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0766EF0-68A2-4D2E-9B25-17165856CAC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0766EF0-68A2-4D2E-9B25-17165856CAC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F74A505-3BB3-4465-80D0-5C8864333C36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F74A505-3BB3-4465-80D0-5C8864333C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F74A505-3BB3-4465-80D0-5C8864333C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F74A505-3BB3-4465-80D0-5C8864333C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{088A0DF8-B83B-4FBA-8CD1-6103526FD258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{088A0DF8-B83B-4FBA-8CD1-6103526FD258}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{088A0DF8-B83B-4FBA-8CD1-6103526FD258}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{088A0DF8-B83B-4FBA-8CD1-6103526FD258}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEA00523-08CF-4627-B7A0-FA89188F98E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEA00523-08CF-4627-B7A0-FA89188F98E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEA00523-08CF-4627-B7A0-FA89188F98E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEA00523-08CF-4627-B7A0-FA89188F98E5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4C7B9DC9-FE2F-4501-B3EE-A09A27431CFD}
+	EndGlobalSection
+EndGlobal
