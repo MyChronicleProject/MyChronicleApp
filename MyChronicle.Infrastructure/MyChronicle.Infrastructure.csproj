@@ -7,7 +7,31 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20241105195129_initialCreate.cs" />
+    <Compile Remove="Migrations\20241105195129_initialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20241105202534_initialCreate2.cs" />
+    <Compile Remove="Migrations\20241105202534_initialCreate2.Designer.cs" />
+    <Compile Remove="Migrations\20241105210427_initialCreate3.cs" />
+    <Compile Remove="Migrations\20241105210427_initialCreate3.Designer.cs" />
+    <Compile Remove="Migrations\DataContextModelSnapshot.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MyChronicle.Domain\MyChronicle.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
