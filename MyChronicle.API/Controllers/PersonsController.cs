@@ -1,22 +1,23 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MyChronicle.Application.FamilyTrees;
+using MyChronicle.Application.Persons;
 using MyChronicle.Domain;
 
 namespace MyChronicle.API.Controllers
 {
-    public class FamilyTreesController : BaseAPIController
+    [Route("api/FamilyTrees/{treeId}/[controller]")]
+    public class PersonsController : BaseAPIController
     {
         private readonly IMediator _mediator;
-        public FamilyTreesController(IMediator mediator)
+        public PersonsController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetFamilyTrees()
+        public async Task<IActionResult> GetPersons(Guid treeId)
         {
-            var result = await _mediator.Send(new List.Query());
+            var result = await _mediator.Send(new List.Query { FamilyTreeId = treeId });
 
             if (result == null) return NotFound();
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
@@ -24,10 +25,10 @@ namespace MyChronicle.API.Controllers
             return BadRequest();
         }
 
-        [HttpGet("{treeId}")]
-        public async Task<IActionResult> GetFamilyTree(Guid treeId)
+        [HttpGet("{personId}")]
+        public async Task<IActionResult> GetPerson(Guid treeId, Guid personId)
         {
-            var result = await _mediator.Send(new Details.Query { Id = treeId });
+            var result = await _mediator.Send(new Details.Query { Id = personId, FamilyTreeId = treeId });
 
             if (result == null) return NotFound();
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
@@ -36,29 +37,29 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostFamilyTree(FamilyTree familyTree)
+        public async Task<IActionResult> PostPerson(Person person, Guid treeId)
         {
-            var result = await _mediator.Send(new Create.Command { FamilyTree = familyTree });
-            
-            if (result == null) return NotFound();
-            if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
-        }
-
-        [HttpPut("{treeId}")]
-        public async Task<IActionResult> PutFamilyTree(Guid treeId, FamilyTree familyTree)
-        {
-            var result = await _mediator.Send(new Edit.Command { FamilyTree = familyTree, Id = treeId });
+            var result = await _mediator.Send(new Create.Command { Person = person, FamilyTreeId = treeId });
 
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
             return BadRequest();
         }
 
-        [HttpDelete("{treeId}")]
-        public async Task<IActionResult> DeleteFamilyTree(Guid treeId)
+        [HttpPut("{personId}")]
+        public async Task<IActionResult> PutPerson(Guid personId, Person person, Guid treeId)
         {
-            var result = await _mediator.Send(new Delete.Command { Id = treeId });
+            var result = await _mediator.Send(new Edit.Command { Person = person, Id = personId, FamilyTreeId = treeId });
+
+            if (result == null) return NotFound();
+            if (result.IsSuccess) return Ok(result.Value);
+            return BadRequest();
+        }
+
+        [HttpDelete("{personId}")]
+        public async Task<IActionResult> DeletePerson(Guid personId, Guid treeId)
+        {
+            var result = await _mediator.Send(new Delete.Command { Id = personId, FamilyTreeId = treeId });
 
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);

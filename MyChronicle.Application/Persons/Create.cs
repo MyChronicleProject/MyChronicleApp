@@ -3,20 +3,21 @@ using MediatR;
 using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
 
-namespace MyChronicle.Application.FamilyTrees
+namespace MyChronicle.Application.Persons
 {
-    public class Edit
+    public class Create
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public required Guid Id { get; set; }
-            public required FamilyTree FamilyTree { get; set; }
+            public required Guid FamilyTreeId {  get; set; }
+            public required Person Person { get; set; }
         }
+
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.FamilyTree).SetValidator(new FamilyTreeValidator());
+                RuleFor(x => x.Person).SetValidator(new PersonValidator());
             }
         }
 
@@ -31,19 +32,14 @@ namespace MyChronicle.Application.FamilyTrees
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var familyTree = await _context.FamilyTrees.FindAsync(request.FamilyTree.Id);
-                if (familyTree == null) return null;
-
-                if (familyTree.Id != request.Id)
+                if (request.Person.FamilyTreeId != request.FamilyTreeId)
                 {
                     return Result<Unit>.Failure("Bad FamilyTreeId");
                 }
 
-                familyTree.Name = request.FamilyTree.Name ?? familyTree.Name;
-
+                _context.Persons.Add(request.Person);
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure("Failed to update familyTree");
                 return Result<Unit>.Success(Unit.Value);
             }
         }

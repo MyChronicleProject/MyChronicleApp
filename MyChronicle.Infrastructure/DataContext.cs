@@ -30,7 +30,11 @@ namespace MyChronicle.Infrastructure
                 .HasOne(r => r.Person_2)
                 .WithMany(p => p.RelationsAsPerson2)
                 .HasForeignKey(r => r.PersonId_2)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Person>()
+                .Property(p => p.Gender)
+                .HasDefaultValue(Gender.Unspecified);
         }
 
     }

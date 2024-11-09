@@ -22,10 +22,10 @@ namespace MyChronicle.Domain
         public DateOnly BirthDate { get; set; }
         public DateOnly? DeathDate { get; set; }
         [Column(TypeName = "VARCHAR(255)")]
-        public string BirthPlace { get; set; }
+        public string? BirthPlace { get; set; }
         [Column(TypeName = "VARCHAR(255)")]
         public string? DeathPlace { get; set; }
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
         [Column(TypeName = "VARCHAR(255)")]
         public string? Occupation { get; set; }
         [Column(TypeName = "LONGTEXT")]
