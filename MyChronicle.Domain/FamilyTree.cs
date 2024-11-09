@@ -10,7 +10,7 @@ namespace MyChronicle.Domain
             this.Person                 = new HashSet<Person>();
         }
 
-        public int      Id   { get; set; }
+        public Guid     Id   { get; set; }
 
         [Column(TypeName = "VARCHAR(255)")]
         public string   Name { get; set; }

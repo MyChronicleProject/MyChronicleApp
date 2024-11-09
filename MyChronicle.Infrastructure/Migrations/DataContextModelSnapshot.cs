@@ -24,11 +24,9 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.AkcessToken", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime(6)");
@@ -40,8 +38,8 @@ namespace MyChronicle.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -52,11 +50,9 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTree", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -69,20 +65,18 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTreePermision", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("FamilyTreeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FamilyTreeId")
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -93,11 +87,9 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.File", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<byte[]>("Content")
                         .IsRequired()
@@ -109,8 +101,8 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Property<int>("FileType")
                         .HasColumnType("int");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PersonId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -121,11 +113,9 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.Person", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateOnly>("BirthDate")
                         .HasColumnType("date");
@@ -140,8 +130,8 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Property<string>("DeathPlace")
                         .HasColumnType("VARCHAR(255)");
 
-                    b.Property<int>("FamilyTreeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FamilyTreeId")
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("Gender")
                         .HasColumnType("int");
@@ -172,11 +162,9 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.RefreshToken", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime(6)");
@@ -191,8 +179,8 @@ namespace MyChronicle.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -203,17 +191,15 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.Relation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("PersonId_1")
+                        .HasColumnType("char(36)");
 
-                    b.Property<int>("PersonId_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PersonId_2")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PersonId_2")
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("RelationType")
                         .HasColumnType("int");
@@ -235,14 +221,12 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("FamilyTreePermisionId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("FamilyTreePermisionId")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
