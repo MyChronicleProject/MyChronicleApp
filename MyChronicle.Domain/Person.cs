@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyChronicle.Domain
 {
@@ -13,9 +7,9 @@ namespace MyChronicle.Domain
     {
         public Person()
         {
-            this.RelationsAsPerson1 = new HashSet<Relations>();
-            this.RelationsAsPerson2 = new HashSet<Relations>();
-            this.Files              = new HashSet<Files>();
+            this.RelationsAsPerson1 = new HashSet<Relation>();
+            this.RelationsAsPerson2 = new HashSet<Relation>();
+            this.Files              = new HashSet<File>();
         }
         public int          Id              { get; set; }
         [Column(TypeName = "VARCHAR(255)")]
@@ -38,9 +32,9 @@ namespace MyChronicle.Domain
         public string?      Note            { get; set; }
         public int          FamilyTreeId    {  get; set; }
 
-        public virtual ICollection<Relations> RelationsAsPerson1 { get; set; }
-        public virtual ICollection<Relations> RelationsAsPerson2 { get; set; }
-        public virtual ICollection<Files> Files {  get; set; }
+        public virtual ICollection<Relation> RelationsAsPerson1 { get; set; }
+        public virtual ICollection<Relation> RelationsAsPerson2 { get; set; }
+        public virtual ICollection<File> Files {  get; set; }
 
     }
 }
