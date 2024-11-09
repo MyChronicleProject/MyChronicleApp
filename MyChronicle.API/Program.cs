@@ -1,5 +1,8 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MyChronicle.Application.FamilyTrees;
 using MyChronicle.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +27,12 @@ builder.Services.AddCors(opt =>
         policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:7072");
     });
 });
+
+builder.Services.AddMediatR(cfg =>
+   cfg.RegisterServicesFromAssembly(typeof(List.Handler).Assembly));
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<Create>();
 
 var app = builder.Build();
 
