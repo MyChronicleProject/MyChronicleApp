@@ -12,8 +12,8 @@ using MyChronicle.Infrastructure;
 namespace MyChronicle.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241105202534_initialCreate2")]
-    partial class initialCreate2
+    [Migration("20241109141349_RebuildDatabase")]
+    partial class RebuildDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,9 +21,9 @@ namespace MyChronicle.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.10")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("MyChronicle.Domain.AkcessToken", b =>
                 {
@@ -31,27 +31,24 @@ namespace MyChronicle.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("Expired")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UsersId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("AkcessTokens");
                 });
@@ -62,15 +59,15 @@ namespace MyChronicle.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(255)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("FamilyTree");
+                    b.ToTable("FamilyTrees");
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTreePermision", b =>
@@ -79,7 +76,7 @@ namespace MyChronicle.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("FamilyTreeId")
                         .HasColumnType("int");
@@ -97,17 +94,17 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.ToTable("FamilyTreePermisions");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Files", b =>
+            modelBuilder.Entity("MyChronicle.Domain.File", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<byte[]>("File")
+                    b.Property<byte[]>("Content")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("longblob");
 
                     b.Property<int>("FileExtension")
                         .HasColumnType("int");
@@ -131,20 +128,20 @@ namespace MyChronicle.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("BirthDate")
                         .HasColumnType("date");
 
                     b.Property<string>("BirthPlace")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(255)");
 
                     b.Property<DateOnly?>("DeathDate")
                         .HasColumnType("date");
 
                     b.Property<string>("DeathPlace")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(255)");
 
                     b.Property<int>("FamilyTreeId")
                         .HasColumnType("int");
@@ -154,21 +151,20 @@ namespace MyChronicle.Infrastructure.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(255)");
 
                     b.Property<string>("MiddleName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(255)");
 
                     b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("LONGTEXT");
 
                     b.Property<string>("Occupation")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(255)");
 
                     b.HasKey("Id");
 
@@ -183,41 +179,38 @@ namespace MyChronicle.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("Expired")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsRevoked")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UsersId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Relations", b =>
+            modelBuilder.Entity("MyChronicle.Domain.Relation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("PersonId_1")
                         .HasColumnType("int");
@@ -243,32 +236,32 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.ToTable("Relations");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Users", b =>
+            modelBuilder.Entity("MyChronicle.Domain.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("FamilyTreePermisionId")
                         .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(255)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(255)");
 
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("VARCHAR(255)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -279,9 +272,11 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.AkcessToken", b =>
                 {
-                    b.HasOne("MyChronicle.Domain.Users", null)
+                    b.HasOne("MyChronicle.Domain.User", null)
                         .WithMany("AkcessTokens")
-                        .HasForeignKey("UsersId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTreePermision", b =>
@@ -295,7 +290,7 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Navigation("FamilyTree");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Files", b =>
+            modelBuilder.Entity("MyChronicle.Domain.File", b =>
                 {
                     b.HasOne("MyChronicle.Domain.Person", "Person")
                         .WithMany("Files")
@@ -317,12 +312,14 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.RefreshToken", b =>
                 {
-                    b.HasOne("MyChronicle.Domain.Users", null)
+                    b.HasOne("MyChronicle.Domain.User", null)
                         .WithMany("RefreshToken")
-                        .HasForeignKey("UsersId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Relations", b =>
+            modelBuilder.Entity("MyChronicle.Domain.Relation", b =>
                 {
                     b.HasOne("MyChronicle.Domain.Person", "Person_1")
                         .WithMany("RelationsAsPerson1")
@@ -341,7 +338,7 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Navigation("Person_2");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Users", b =>
+            modelBuilder.Entity("MyChronicle.Domain.User", b =>
                 {
                     b.HasOne("MyChronicle.Domain.FamilyTreePermision", null)
                         .WithMany("Users")
@@ -369,7 +366,7 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Navigation("RelationsAsPerson2");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Users", b =>
+            modelBuilder.Entity("MyChronicle.Domain.User", b =>
                 {
                     b.Navigation("AkcessTokens");
 

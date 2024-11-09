@@ -15,7 +15,7 @@ namespace MyChronicle.Domain
         [Column(TypeName = "VARCHAR(255)")]
         public string       Name            { get; set; }
         [Column(TypeName = "VARCHAR(255)")]
-        public string       MiddleName      { get; set; }
+        public string?      MiddleName      { get; set; }
         [Column(TypeName = "VARCHAR(255)")]
         public string       LastName        { get; set; }
 

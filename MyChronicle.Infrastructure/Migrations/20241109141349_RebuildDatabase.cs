@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MyChronicle.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Refactor : Migration
+    public partial class RebuildDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace MyChronicle.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "FamilyTree",
+                name: "FamilyTrees",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -26,7 +26,7 @@ namespace MyChronicle.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FamilyTree", x => x.Id);
+                    table.PrimaryKey("PK_FamilyTrees", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -44,9 +44,9 @@ namespace MyChronicle.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_FamilyTreePermisions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FamilyTreePermisions_FamilyTree_FamilyTreeId",
+                        name: "FK_FamilyTreePermisions_FamilyTrees_FamilyTreeId",
                         column: x => x.FamilyTreeId,
-                        principalTable: "FamilyTree",
+                        principalTable: "FamilyTrees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -60,7 +60,7 @@ namespace MyChronicle.Infrastructure.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "VARCHAR(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    MiddleName = table.Column<string>(type: "VARCHAR(255)", nullable: false)
+                    MiddleName = table.Column<string>(type: "VARCHAR(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastName = table.Column<string>(type: "VARCHAR(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -81,9 +81,9 @@ namespace MyChronicle.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Persons", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Persons_FamilyTree_FamilyTreeId",
+                        name: "FK_Persons_FamilyTrees_FamilyTreeId",
                         column: x => x.FamilyTreeId,
-                        principalTable: "FamilyTree",
+                        principalTable: "FamilyTrees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -284,7 +284,7 @@ namespace MyChronicle.Infrastructure.Migrations
                 name: "FamilyTreePermisions");
 
             migrationBuilder.DropTable(
-                name: "FamilyTree");
+                name: "FamilyTrees");
         }
     }
 }

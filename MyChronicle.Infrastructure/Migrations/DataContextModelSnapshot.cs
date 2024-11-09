@@ -64,7 +64,7 @@ namespace MyChronicle.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FamilyTree");
+                    b.ToTable("FamilyTrees");
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTreePermision", b =>
@@ -151,7 +151,6 @@ namespace MyChronicle.Infrastructure.Migrations
                         .HasColumnType("VARCHAR(255)");
 
                     b.Property<string>("MiddleName")
-                        .IsRequired()
                         .HasColumnType("VARCHAR(255)");
 
                     b.Property<string>("Name")

@@ -17,6 +17,14 @@ builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:7072");
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -39,6 +47,7 @@ try
 {
     var context = service.GetRequiredService<DataContext>();
     context.Database.Migrate();
+    await Seed.SeedData(context);
 }
 catch (Exception ex)
 {

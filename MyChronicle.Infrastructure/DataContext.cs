@@ -7,7 +7,7 @@ namespace MyChronicle.Infrastructure
     {
         public DataContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<FamilyTree> FamilyTree { get; set; }
+        public DbSet<FamilyTree> FamilyTrees { get; set; }
 
         public DbSet<Person> Persons { get; set; }
         public DbSet<AkcessToken> AkcessTokens { get; set; }

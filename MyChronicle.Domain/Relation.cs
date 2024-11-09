@@ -1,6 +1,6 @@
 ﻿namespace MyChronicle.Domain
 {
-    public enum RelationType {Parent, Child, Sibling, Spouse, Uncle, Aunt, Cousin, Partner }
+    public enum RelationType {Child, Parent, Spouse }
     public class Relation
     {
         public int          Id              { get; set; }
