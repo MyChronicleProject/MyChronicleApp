@@ -5,7 +5,7 @@
 namespace MyChronicle.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initialCreate4 : Migration
+    public partial class JustBaackup : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

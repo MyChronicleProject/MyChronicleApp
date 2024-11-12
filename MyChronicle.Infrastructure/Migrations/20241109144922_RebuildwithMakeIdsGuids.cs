@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -7,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MyChronicle.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate5 : Migration
+    public partial class RebuildwithMakeIdsGuids : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,17 +15,16 @@ namespace MyChronicle.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "FamilyTree",
+                name: "FamilyTrees",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Name = table.Column<string>(type: "VARCHAR(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FamilyTree", x => x.Id);
+                    table.PrimaryKey("PK_FamilyTrees", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -34,19 +32,18 @@ namespace MyChronicle.Infrastructure.Migrations
                 name: "FamilyTreePermisions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FamilyTreeId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    FamilyTreeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FamilyTreePermisions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FamilyTreePermisions_FamilyTree_FamilyTreeId",
+                        name: "FK_FamilyTreePermisions_FamilyTrees_FamilyTreeId",
                         column: x => x.FamilyTreeId,
-                        principalTable: "FamilyTree",
+                        principalTable: "FamilyTrees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -56,11 +53,10 @@ namespace MyChronicle.Infrastructure.Migrations
                 name: "Persons",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Name = table.Column<string>(type: "VARCHAR(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    MiddleName = table.Column<string>(type: "VARCHAR(255)", nullable: false)
+                    MiddleName = table.Column<string>(type: "VARCHAR(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastName = table.Column<string>(type: "VARCHAR(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -75,15 +71,15 @@ namespace MyChronicle.Infrastructure.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Note = table.Column<string>(type: "LONGTEXT", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    FamilyTreeId = table.Column<int>(type: "int", nullable: false)
+                    FamilyTreeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Persons", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Persons_FamilyTree_FamilyTreeId",
+                        name: "FK_Persons_FamilyTrees_FamilyTreeId",
                         column: x => x.FamilyTreeId,
-                        principalTable: "FamilyTree",
+                        principalTable: "FamilyTrees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -93,8 +89,7 @@ namespace MyChronicle.Infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Login = table.Column<string>(type: "VARCHAR(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PasswordHash = table.Column<string>(type: "TEXT", nullable: false)
@@ -103,7 +98,7 @@ namespace MyChronicle.Infrastructure.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastName = table.Column<string>(type: "VARCHAR(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    FamilyTreePermisionId = table.Column<int>(type: "int", nullable: true)
+                    FamilyTreePermisionId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -120,11 +115,10 @@ namespace MyChronicle.Infrastructure.Migrations
                 name: "Files",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     FileType = table.Column<int>(type: "int", nullable: false),
-                    PersonId = table.Column<int>(type: "int", nullable: false),
-                    File = table.Column<byte[]>(type: "longblob", nullable: false),
+                    PersonId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Content = table.Column<byte[]>(type: "longblob", nullable: false),
                     FileExtension = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -143,10 +137,9 @@ namespace MyChronicle.Infrastructure.Migrations
                 name: "Relations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    PersonId_1 = table.Column<int>(type: "int", nullable: false),
-                    PersonId_2 = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    PersonId_1 = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    PersonId_2 = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     RelationType = table.Column<int>(type: "int", nullable: false),
                     startDate = table.Column<DateOnly>(type: "date", nullable: false),
                     endDate = table.Column<DateOnly>(type: "date", nullable: false)
@@ -173,23 +166,22 @@ namespace MyChronicle.Infrastructure.Migrations
                 name: "AkcessTokens",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Token = table.Column<string>(type: "TEXT", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Expired = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: true)
+                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AkcessTokens", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AkcessTokens_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_AkcessTokens_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -197,31 +189,30 @@ namespace MyChronicle.Infrastructure.Migrations
                 name: "RefreshTokens",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Token = table.Column<string>(type: "TEXT", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Expired = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    IsRevoked = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: true)
+                    IsRevoked = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RefreshTokens", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RefreshTokens_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_RefreshTokens_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AkcessTokens_UsersId",
+                name: "IX_AkcessTokens_UserId",
                 table: "AkcessTokens",
-                column: "UsersId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FamilyTreePermisions_FamilyTreeId",
@@ -239,9 +230,9 @@ namespace MyChronicle.Infrastructure.Migrations
                 column: "FamilyTreeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RefreshTokens_UsersId",
+                name: "IX_RefreshTokens_UserId",
                 table: "RefreshTokens",
-                column: "UsersId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Relations_PersonId_1",
@@ -284,7 +275,7 @@ namespace MyChronicle.Infrastructure.Migrations
                 name: "FamilyTreePermisions");
 
             migrationBuilder.DropTable(
-                name: "FamilyTree");
+                name: "FamilyTrees");
         }
     }
 }

@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20241105195129_initialCreate.cs" />
-    <Compile Remove="Migrations\20241105195129_initialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20241105202534_initialCreate2.cs" />
-    <Compile Remove="Migrations\20241105202534_initialCreate2.Designer.cs" />
-    <Compile Remove="Migrations\20241105210427_initialCreate3.cs" />
-    <Compile Remove="Migrations\20241105210427_initialCreate3.Designer.cs" />
-    <Compile Remove="Migrations\DataContextModelSnapshot.cs" />
   </ItemGroup>
 
   <ItemGroup>

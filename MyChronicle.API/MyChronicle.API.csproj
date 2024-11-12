@@ -24,8 +24,4 @@
     <ProjectReference Include="..\MyChronicle.Application\MyChronicle.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

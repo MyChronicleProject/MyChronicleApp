@@ -12,8 +12,8 @@ using MyChronicle.Infrastructure;
 namespace MyChronicle.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241106152110_InitialCreate5")]
-    partial class InitialCreate5
+    [Migration("20241109183239_OptionalGenderInPerson")]
+    partial class OptionalGenderInPerson
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.AkcessToken", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime(6)");
@@ -43,26 +41,21 @@ namespace MyChronicle.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UsersId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("AkcessTokens");
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTree", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -70,25 +63,23 @@ namespace MyChronicle.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FamilyTree");
+                    b.ToTable("FamilyTrees");
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTreePermision", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("FamilyTreeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FamilyTreeId")
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -97,15 +88,13 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.ToTable("FamilyTreePermisions");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Files", b =>
+            modelBuilder.Entity("MyChronicle.Domain.File", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte[]>("File")
+                    b.Property<byte[]>("Content")
                         .IsRequired()
                         .HasColumnType("longblob");
 
@@ -115,8 +104,8 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Property<int>("FileType")
                         .HasColumnType("int");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PersonId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -127,17 +116,14 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.Person", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateOnly>("BirthDate")
                         .HasColumnType("date");
 
                     b.Property<string>("BirthPlace")
-                        .IsRequired()
                         .HasColumnType("VARCHAR(255)");
 
                     b.Property<DateOnly?>("DeathDate")
@@ -146,18 +132,19 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Property<string>("DeathPlace")
                         .HasColumnType("VARCHAR(255)");
 
-                    b.Property<int>("FamilyTreeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FamilyTreeId")
+                        .HasColumnType("char(36)");
 
-                    b.Property<int>("Gender")
-                        .HasColumnType("int");
+                    b.Property<int?>("Gender")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(3);
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("VARCHAR(255)");
 
                     b.Property<string>("MiddleName")
-                        .IsRequired()
                         .HasColumnType("VARCHAR(255)");
 
                     b.Property<string>("Name")
@@ -179,11 +166,9 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.RefreshToken", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime(6)");
@@ -198,32 +183,27 @@ namespace MyChronicle.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UsersId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Relations", b =>
+            modelBuilder.Entity("MyChronicle.Domain.Relation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("PersonId_1")
+                        .HasColumnType("char(36)");
 
-                    b.Property<int>("PersonId_1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PersonId_2")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PersonId_2")
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("RelationType")
                         .HasColumnType("int");
@@ -243,16 +223,14 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.ToTable("Relations");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Users", b =>
+            modelBuilder.Entity("MyChronicle.Domain.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("FamilyTreePermisionId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("FamilyTreePermisionId")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -279,9 +257,11 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.AkcessToken", b =>
                 {
-                    b.HasOne("MyChronicle.Domain.Users", null)
+                    b.HasOne("MyChronicle.Domain.User", null)
                         .WithMany("AkcessTokens")
-                        .HasForeignKey("UsersId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTreePermision", b =>
@@ -295,7 +275,7 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Navigation("FamilyTree");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Files", b =>
+            modelBuilder.Entity("MyChronicle.Domain.File", b =>
                 {
                     b.HasOne("MyChronicle.Domain.Person", "Person")
                         .WithMany("Files")
@@ -317,12 +297,14 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.RefreshToken", b =>
                 {
-                    b.HasOne("MyChronicle.Domain.Users", null)
+                    b.HasOne("MyChronicle.Domain.User", null)
                         .WithMany("RefreshToken")
-                        .HasForeignKey("UsersId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Relations", b =>
+            modelBuilder.Entity("MyChronicle.Domain.Relation", b =>
                 {
                     b.HasOne("MyChronicle.Domain.Person", "Person_1")
                         .WithMany("RelationsAsPerson1")
@@ -341,7 +323,7 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Navigation("Person_2");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Users", b =>
+            modelBuilder.Entity("MyChronicle.Domain.User", b =>
                 {
                     b.HasOne("MyChronicle.Domain.FamilyTreePermision", null)
                         .WithMany("Users")
@@ -369,7 +351,7 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Navigation("RelationsAsPerson2");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.Users", b =>
+            modelBuilder.Entity("MyChronicle.Domain.User", b =>
                 {
                     b.Navigation("AkcessTokens");
 
