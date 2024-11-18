@@ -61,10 +61,9 @@ var retryPolicy = Policy.Handle<Exception>().WaitAndRetry(5, retryAttempt => Tim
 
 try
 {
-    var context = service.GetRequiredService<DataContext>();
-
     await retryPolicy.Execute(async () =>
     {
+        var context = service.GetRequiredService<DataContext>();
         context.Database.Migrate();
         await Seed.SeedData(context);
     });
