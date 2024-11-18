@@ -3,7 +3,6 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using MyChronicle.Application.FamilyTrees;
 using MyChronicle.Infrastructure;
-using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +15,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>(opt =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DockerConnection");
+    var isRunningInContainer = Environment.GetEnvironmentVariable("RUNNING_IN_CONTAINER") == "true"; 
+    var connectionString = isRunningInContainer
+        ? builder.Configuration.GetConnectionString("DockerConnection")
+        : builder.Configuration.GetConnectionString("DefaultConnection");
     opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
@@ -26,6 +28,8 @@ builder.Services.AddCors(opt =>
     {
         policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
         policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:7072");
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:80");
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:8080");
     });
 });
 
@@ -53,21 +57,13 @@ app.MapControllers();
 using var scope = app.Services.CreateScope();
 var service = scope.ServiceProvider;
 
-var retryPolicy = Policy.Handle<Exception>().WaitAndRetry(5, retryAttempt => TimeSpan.FromSeconds(30),
-    (exception, timeSpan, retryCount, context) =>
-{
-    var logger = service.GetRequiredService<ILogger<Program>>();
-    logger.LogError(exception, $"Retry {retryCount} encountered an error: {exception.Message}. Waiting {timeSpan} before retrying...");
-});
-
 try
 {
-    await retryPolicy.Execute(async () =>
-    {
-        var context = service.GetRequiredService<DataContext>();
-        context.Database.Migrate();
-        await Seed.SeedData(context);
-    });
+
+    var context = service.GetRequiredService<DataContext>();
+    context.Database.Migrate();
+    await Seed.SeedData(context);
+
 }
 catch (Exception ex)
 {
