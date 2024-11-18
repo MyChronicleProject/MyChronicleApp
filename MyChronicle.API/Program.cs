@@ -1,10 +1,17 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MyChronicle.Application.FamilyTrees;
 using MyChronicle.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("connections.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
 // Add services to the container.
 
@@ -15,9 +22,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>(opt =>
 {
-    var isRunningInContainer = Environment.GetEnvironmentVariable("RUNNING_IN_CONTAINER") == "true"; 
+    var isRunningInContainer = Environment.GetEnvironmentVariable("RUNNING_IN_CONTAINER") == "true";
     var connectionString = isRunningInContainer
-        ? builder.Configuration.GetConnectionString("DockerConnection")
+        ? Environment.GetEnvironmentVariable("DOCKER_CONNECTION_STRING")
+        ?? builder.Configuration.GetConnectionString("DockerConnection")
         : builder.Configuration.GetConnectionString("DefaultConnection");
     opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
