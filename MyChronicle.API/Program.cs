@@ -1,11 +1,17 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using MyChronicle.Application.FamilyTrees;
 using MyChronicle.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("connections.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
 // Add services to the container.
 
@@ -16,7 +22,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>(opt =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    var isRunningInContainer = Environment.GetEnvironmentVariable("RUNNING_IN_CONTAINER") == "true";
+    var connectionString = isRunningInContainer
+        ? Environment.GetEnvironmentVariable("DOCKER_CONNECTION_STRING")
+        ?? builder.Configuration.GetConnectionString("DockerConnection")
+        : builder.Configuration.GetConnectionString("DefaultConnection");
     opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
@@ -24,7 +34,10 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", policy =>
     {
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
         policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:7072");
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:80");
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:8080");
     });
 });
 
@@ -43,20 +56,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-using var scope     = app.Services.CreateScope();
-var     service     = scope.ServiceProvider;
+using var scope = app.Services.CreateScope();
+var service = scope.ServiceProvider;
 
 try
 {
+
     var context = service.GetRequiredService<DataContext>();
     context.Database.Migrate();
     await Seed.SeedData(context);
+
 }
 catch (Exception ex)
 {
