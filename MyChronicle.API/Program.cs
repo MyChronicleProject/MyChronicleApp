@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MyChronicle.Application.FamilyTrees;
 using MyChronicle.Infrastructure;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>(opt =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    var connectionString = builder.Configuration.GetConnectionString("DockerConnection");
     opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
@@ -49,14 +50,24 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using var scope     = app.Services.CreateScope();
-var     service     = scope.ServiceProvider;
+using var scope = app.Services.CreateScope();
+var service = scope.ServiceProvider;
+
+var retryPolicy = Policy.Handle<Exception>().WaitAndRetry(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (exception, timeSpan, retryCount, context) =>
+{
+    var logger = service.GetRequiredService<ILogger<Program>>();
+    logger.LogError(exception, $"Retry {retryCount} encountered an error: {exception.Message}. Waiting {timeSpan} before retrying...");
+});
 
 try
 {
     var context = service.GetRequiredService<DataContext>();
-    context.Database.Migrate();
-    await Seed.SeedData(context);
+
+    await retryPolicy.Execute(async () =>
+    {
+        context.Database.Migrate();
+        await Seed.SeedData(context);
+    });
 }
 catch (Exception ex)
 {
