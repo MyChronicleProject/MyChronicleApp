@@ -1,7 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using MyChronicle.Application.FamilyTrees;
 using MyChronicle.Infrastructure;
 using Polly;
