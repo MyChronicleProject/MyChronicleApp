@@ -52,7 +52,8 @@ app.MapControllers();
 using var scope = app.Services.CreateScope();
 var service = scope.ServiceProvider;
 
-var retryPolicy = Policy.Handle<Exception>().WaitAndRetry(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (exception, timeSpan, retryCount, context) =>
+var retryPolicy = Policy.Handle<Exception>().WaitAndRetry(5, retryAttempt => TimeSpan.FromSeconds(30),
+    (exception, timeSpan, retryCount, context) =>
 {
     var logger = service.GetRequiredService<ILogger<Program>>();
     logger.LogError(exception, $"Retry {retryCount} encountered an error: {exception.Message}. Waiting {timeSpan} before retrying...");
