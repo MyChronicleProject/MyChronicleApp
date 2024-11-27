@@ -10,11 +10,9 @@ namespace MyChronicle.API.Controllers
     public class RelationsController : BaseAPIController
     {
         private readonly IMediator _mediator;
-        private readonly DataContext _context;
-        public RelationsController(IMediator mediator, DataContext context)
+        public RelationsController(IMediator mediator)
         {
             _mediator = mediator;
-            _context = context;
         }
 
         [HttpGet]
@@ -26,7 +24,7 @@ namespace MyChronicle.API.Controllers
             if (result == null) return NotFound();
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpGet("{relationId}")]
@@ -38,7 +36,7 @@ namespace MyChronicle.API.Controllers
             if (result == null) return NotFound();
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpPost]
@@ -47,7 +45,7 @@ namespace MyChronicle.API.Controllers
             var result = await _mediator.Send(new Create.Command { Relation = relation });
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpDelete("{relationId}")]
@@ -57,7 +55,7 @@ namespace MyChronicle.API.Controllers
 
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpPut("{relationId}")]
@@ -67,7 +65,7 @@ namespace MyChronicle.API.Controllers
 
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
     }
 }
