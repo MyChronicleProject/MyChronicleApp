@@ -34,15 +34,13 @@ namespace MyChronicle.Application.Files
             {
                 var person = await _context.Persons.FindAsync(request.File.PersonId);
 
-                if (person == null)
-                {
-                    return Result<Unit>.Failure("The person for whom you want to crete files could not be found");
-                }
+                if (person == null) return Result<Unit>.Failure($"The Person with Id {person.Id} could not be found", ErrorCategory.NotFound);
                 request.File.Person = person;
 
                 _context.Files.Add(request.File);
                 var result = await _context.SaveChangesAsync() > 0;
 
+                if (!result) return Result<Unit>.Failure("Failed to create File"); 
                 return Result<Unit>.Success(Unit.Value);
             }
         }

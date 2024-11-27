@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MyChronicle.Application;
 using MyChronicle.Application.Relations;
 using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
@@ -10,11 +11,9 @@ namespace MyChronicle.API.Controllers
     public class RelationsController : BaseAPIController
     {
         private readonly IMediator _mediator;
-        private readonly DataContext _context;
-        public RelationsController(IMediator mediator, DataContext context)
+        public RelationsController(IMediator mediator)
         {
             _mediator = mediator;
-            _context = context;
         }
 
         [HttpGet]
@@ -23,10 +22,10 @@ namespace MyChronicle.API.Controllers
             
             var result = await _mediator.Send(new List.Query { PersonId = personId });
 
-            if (result == null) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest();
+            return BadRequest(result.ErrorMsg!.Message);
         }
 
         [HttpGet("{relationId}")]
@@ -35,19 +34,20 @@ namespace MyChronicle.API.Controllers
 
             var result = await _mediator.Send(new Details.Query { Id = relationId});
 
-            if (result == null) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest();
+            return BadRequest(result.ErrorMsg!.Message);
         }
 
         [HttpPost]
         public async Task<IActionResult> PostRelation([FromBody] Relation relation)
         {
             var result = await _mediator.Send(new Create.Command { Relation = relation });
-            if (result == null) return NotFound();
+
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg!.Message);
         }
 
         [HttpDelete("{relationId}")]
@@ -55,9 +55,9 @@ namespace MyChronicle.API.Controllers
         {
             var result = await _mediator.Send(new Delete.Command { Id = relationId });
 
-            if (result == null) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg!.Message);
         }
 
         [HttpPut("{relationId}")]
@@ -65,9 +65,9 @@ namespace MyChronicle.API.Controllers
         {
             var result = await _mediator.Send(new Edit.Command { Relation = relation, Id = relationId});
 
-            if (result == null) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg!.Message);
         }
     }
 }

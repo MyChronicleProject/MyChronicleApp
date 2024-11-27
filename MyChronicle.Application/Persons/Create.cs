@@ -9,7 +9,7 @@ namespace MyChronicle.Application.Persons
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public required Guid FamilyTreeId {  get; set; }
+            public required Guid FamilyTreeId { get; set; }
             public required Person Person { get; set; }
         }
 
@@ -34,12 +34,13 @@ namespace MyChronicle.Application.Persons
             {
                 if (request.Person.FamilyTreeId != request.FamilyTreeId)
                 {
-                    return Result<Unit>.Failure("Bad FamilyTreeId");
+                    return Result<Unit>.Failure($"Not matching Id. Request FamilyTreeId was {request.FamilyTreeId}. Request Person.FamilyTreeId was {request.Person.FamilyTreeId}");
                 }
 
                 _context.Persons.Add(request.Person);
                 var result = await _context.SaveChangesAsync() > 0;
 
+                if (!result) return Result<Unit>.Failure("Failed to create Person");
                 return Result<Unit>.Success(Unit.Value);
             }
         }

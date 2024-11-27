@@ -22,6 +22,8 @@ namespace MyChronicle.Application.FamilyTrees
             public async Task<Result<FamilyTree>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var familyTree = await _context.FamilyTrees.FindAsync(request.Id);
+                if (familyTree == null) return Result<FamilyTree>.Failure($"The FamilyTree with Id {request.Id} could not be found", ErrorCategory.NotFound);
+
                 return Result<FamilyTree>.Success(familyTree);
             }
         }

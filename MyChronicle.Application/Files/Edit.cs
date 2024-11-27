@@ -35,19 +35,17 @@ namespace MyChronicle.Application.Files
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                if (request.File.Id != request.Id)
-                {
-                    return Result<Unit>.Failure("No file with the given id was found");
-                }
-
                 var file = await _context.Files.FindAsync(request.File.Id);
+                if (file == null) return Result<Unit>.Failure($"The File with Id {request.Id} could not be found", ErrorCategory.NotFound);
 
-                if (file == null) return null;
+                if (file.Id != request.Id)
+                {
+                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. File id was {file.Id}");
+                }
 
                 file.Content = request.File.Content;
                 file.FileType = request.File.FileType;
                 file.FileExtension = request.File.FileExtension;
-
 
                 var result = await _context.SaveChangesAsync() > 0;
 
