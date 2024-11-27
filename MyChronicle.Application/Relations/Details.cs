@@ -24,7 +24,7 @@ namespace MyChronicle.Application.Relations
             public async Task<Result<Relation>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var result = await _context.Relations.FindAsync(request.Id);
-                if (result == null) return null;
+                if (result == null) return Result<Relation>.Failure($"The Relation with Id {request.Id} could not be found", ErrorCategory.NotFound);
 
                 return Result<Relation>.Success(result);
             }

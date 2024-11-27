@@ -32,7 +32,7 @@ namespace MyChronicle.Application.Relations
             {
                 var relation = await _context.Relations.FindAsync(request.Relation.Id);
 
-                if (relation == null) return null;
+                if (relation == null) return Result<Unit>.Failure($"The Relation with Id {request.Relation.Id} could not be found", ErrorCategory.NotFound);
 
                 if (relation.Id != request.Id)
                 {

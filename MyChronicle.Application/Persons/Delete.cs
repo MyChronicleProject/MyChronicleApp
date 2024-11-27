@@ -24,7 +24,7 @@ namespace MyChronicle.Application.Persons
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var person = await _context.Persons.FindAsync(request.Id);
-                if (person == null) return null;
+                if (person == null) return Result<Unit>.Failure($"The Person with Id {request.Id} could not be found", ErrorCategory.NotFound);
 
                 if (person.FamilyTreeId != request.FamilyTreeId)
                 {

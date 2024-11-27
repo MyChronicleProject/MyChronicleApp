@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -28,11 +29,7 @@ namespace MyChronicle.Application.Files
             {
                 var file = await _context.Files.FindAsync(request.Id);
 
-                if (file == null)
-                {
-                    //return Result<Unit>.Failure("No file with the given id was found");
-                    return null;
-                }
+                if (file == null) return Result<Unit>.Failure($"The File with Id {request.Id} could not be found", ErrorCategory.NotFound);
 
                 _context.Remove(file);
                 var result = await _context.SaveChangesAsync() > 0;

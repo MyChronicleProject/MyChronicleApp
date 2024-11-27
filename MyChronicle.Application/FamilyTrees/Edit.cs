@@ -32,7 +32,7 @@ namespace MyChronicle.Application.FamilyTrees
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var familyTree = await _context.FamilyTrees.FindAsync(request.FamilyTree.Id);
-                if (familyTree == null) return null;
+                if (familyTree == null) return Result<Unit>.Failure($"The FamilyTree with Id {request.Id} could not be found", ErrorCategory.NotFound);
 
                 if (familyTree.Id != request.Id)
                 {

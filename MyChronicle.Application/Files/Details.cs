@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
+using System;
 
 namespace MyChronicle.Application.Files
 {
@@ -24,11 +25,7 @@ namespace MyChronicle.Application.Files
             {
                 var result = await _context.Files.FindAsync(request.Id);
 
-                if (result == null)
-                {
-                    //return Result<MyChronicle.Domain.File>.Failure("No file with the given id was found");
-                    return null;
-                }
+                if (result == null) return Result<Domain.File>.Failure($"The File with Id {request.Id} could not be found", ErrorCategory.NotFound);
 
                 return Result<Domain.File>.Success(result);
             }

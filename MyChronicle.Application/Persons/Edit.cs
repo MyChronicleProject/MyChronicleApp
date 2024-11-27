@@ -33,7 +33,7 @@ namespace MyChronicle.Application.Persons
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var person = await _context.Persons.FindAsync(request.Person.Id);
-                if (person == null) return null;
+                if (person == null) return Result<Unit>.Failure($"The Person with Id {request.Person.Id} could not be found", ErrorCategory.NotFound);
 
                 if (person.Id != request.Id)
                 {
