@@ -7,18 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Nowy folder1\**" />
-    <Compile Remove="Nowy folder2\**" />
-    <Compile Remove="Nowy folder\**" />
-    <EmbeddedResource Remove="Nowy folder1\**" />
-    <EmbeddedResource Remove="Nowy folder2\**" />
-    <EmbeddedResource Remove="Nowy folder\**" />
-    <None Remove="Nowy folder1\**" />
-    <None Remove="Nowy folder2\**" />
-    <None Remove="Nowy folder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
   </ItemGroup>
@@ -27,5 +15,7 @@
     <ProjectReference Include="..\MyChronicle.Domain\MyChronicle.Domain.csproj" />
     <ProjectReference Include="..\MyChronicle.Infrastructure\MyChronicle.Infrastructure.csproj" />
   </ItemGroup>
+
+
 
 </Project>

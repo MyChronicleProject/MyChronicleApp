@@ -1,13 +1,17 @@
 ﻿using MediatR;
 using MyChronicle.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MyChronicle.Application.Persons
+namespace MyChronicle.Application.Files
 {
     public class Delete
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public required Guid FamilyTreeId { get; set; }
             public required Guid Id { get; set; }
         }
 
@@ -22,17 +26,17 @@ namespace MyChronicle.Application.Persons
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var person = await _context.Persons.FindAsync(request.Id);
+                var file = await _context.Files.FindAsync(request.Id);
 
-                if (person.FamilyTreeId != request.FamilyTreeId)
+                if (file == null)
                 {
-                    return Result<Unit>.Failure("Bad FamilyTreeId");
+                    return Result<Unit>.Failure("No file with the given id was found");
                 }
 
-                _context.Remove(person);
+                _context.Remove(file);
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure("Failed to delete the person");
+                if (!result) return Result<Unit>.Failure("Failed to delete the file");
                 return Result<Unit>.Success(Unit.Value);
             }
         }

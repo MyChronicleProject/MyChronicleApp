@@ -9,7 +9,7 @@
         public Guid PersonId { get; set; }
         public byte[] Content { get; set; }
         public FileExtension FileExtension { get; set; }
-
-        public virtual Person Person { get; set; }
+        public virtual Person? Person { get; set; }
+        //dodałabym Name
     }
 }
