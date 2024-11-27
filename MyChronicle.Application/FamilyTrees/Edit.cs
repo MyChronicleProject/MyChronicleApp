@@ -36,7 +36,7 @@ namespace MyChronicle.Application.FamilyTrees
 
                 if (familyTree.Id != request.Id)
                 {
-                    return Result<Unit>.Failure("Bad FamilyTreeId");
+                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. FamilyTree id was {familyTree.Id}");
                 }
 
                 familyTree.Name = request.FamilyTree.Name ?? familyTree.Name;

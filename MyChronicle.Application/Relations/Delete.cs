@@ -28,6 +28,7 @@ namespace MyChronicle.Application.Relations
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var relation = await _context.Relations.FindAsync(request.Id);
+                if (relation == null) return null;
 
                 _context.Remove(relation);
                 var result = await _context.SaveChangesAsync() > 0;

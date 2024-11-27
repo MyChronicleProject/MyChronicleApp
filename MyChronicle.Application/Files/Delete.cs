@@ -30,13 +30,14 @@ namespace MyChronicle.Application.Files
 
                 if (file == null)
                 {
-                    return Result<Unit>.Failure("No file with the given id was found");
+                    //return Result<Unit>.Failure("No file with the given id was found");
+                    return null;
                 }
 
                 _context.Remove(file);
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure("Failed to delete the file");
+                if (!result) return Result<Unit>.Failure($"Failed to delete the File, id: {file.Id}");
                 return Result<Unit>.Success(Unit.Value);
             }
         }

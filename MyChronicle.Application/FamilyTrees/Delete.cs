@@ -23,10 +23,12 @@ namespace MyChronicle.Application.FamilyTrees
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var familyTree = await _context.FamilyTrees.FindAsync(request.Id);
+                if (familyTree == null) return null;
+
                 _context.Remove(familyTree);
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure("Failed to delete the familyTree");
+                if (!result) return Result<Unit>.Failure($"Failed to delete the FamilyTree, id: {familyTree.Id}");
                 return Result<Unit>.Success(Unit.Value);
             }
         }

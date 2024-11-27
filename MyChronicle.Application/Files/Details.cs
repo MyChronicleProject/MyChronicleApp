@@ -20,16 +20,17 @@ namespace MyChronicle.Application.Files
                 _context = context;
             }
 
-            public async Task<Result<MyChronicle.Domain.File>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<Domain.File>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var result = await _context.Files.FindAsync(request.Id);
 
                 if (result == null)
                 {
-                    return Result<MyChronicle.Domain.File>.Failure("No file with the given id was found");
+                    //return Result<MyChronicle.Domain.File>.Failure("No file with the given id was found");
+                    return null;
                 }
 
-                return Result<MyChronicle.Domain.File>.Success(result);
+                return Result<Domain.File>.Success(result);
             }
         }
     }

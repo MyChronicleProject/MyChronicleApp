@@ -41,20 +41,22 @@ namespace MyChronicle.Application.Relations
 
                 if (person1 == null || person2 == null)
                 {
-                    return Result<Unit>.Failure("Person not found.");
+                    //return Result<Unit>.Failure("Person not found.");
+                    return null;
                 }
 
                 request.Relation.Person_1 = person1;
                 request.Relation.Person_2 = person2;
 
-                if (request.Relation.Person_1 == null  || request.Relation.Person_2 == null)
-                {
-                    return Result<Unit>.Failure("PersonId_1 and PersonId_2 must be valid GUIDs.");
-                }
+                //if (request.Relation.Person_1 == null  || request.Relation.Person_2 == null)
+                //{
+                //    return Result<Unit>.Failure("PersonId_1 and PersonId_2 must be valid GUIDs.");
+                //}
 
                 _context.Relations.Add(request.Relation);
                 var result = await _context.SaveChangesAsync() > 0;
 
+                if (!result) return Result<Unit>.Failure("Failed to create the Relation");
                 return Result<Unit>.Success(Unit.Value);
             }
         }

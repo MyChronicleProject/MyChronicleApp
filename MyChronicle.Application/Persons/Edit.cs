@@ -32,17 +32,17 @@ namespace MyChronicle.Application.Persons
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                if (request.Person.Id != request.Id)
-                {
-                    return Result<Unit>.Failure("Wrong Id");
-                }
-
                 var person = await _context.Persons.FindAsync(request.Person.Id);
                 if (person == null) return null;
 
+                if (person.Id != request.Id)
+                {
+                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. Person Id was {person.Id}");
+                }
+
                 if (person.FamilyTreeId != request.FamilyTreeId)
                 {
-                    return Result<Unit>.Failure("Bad FamilyTreeId");
+                    return Result<Unit>.Failure($"Not matching Id. Request FamilyTreeId was {request.FamilyTreeId}. Person FamilyTreeId was {person.FamilyTreeId}");
                 }
 
                 person.Name = request.Person.Name ?? person.Name;

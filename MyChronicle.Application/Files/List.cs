@@ -28,11 +28,12 @@ namespace MyChronicle.Application.Files
 
                 if (person == null)
                 {
-                    return Result<List<MyChronicle.Domain.File>>.Failure("The person for whom you want to crete files could not be found");
+                    //return Result<List<MyChronicle.Domain.File>>.Failure("The person for whom you want to crete files could not be found");
+                    return null;
                 }
 
                 var result = await _context.Files.Where(file => file.PersonId == request.PersonId).ToListAsync();
-                return Result<List<MyChronicle.Domain.File>>.Success(result);
+                return Result<List<Domain.File>>.Success(result);
             }
         }
     }

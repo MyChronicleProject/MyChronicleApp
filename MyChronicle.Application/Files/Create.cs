@@ -36,13 +36,15 @@ namespace MyChronicle.Application.Files
 
                 if (person == null)
                 {
-                    return Result<Unit>.Failure("The person for whom you want to crete files could not be found");
+                    //return Result<Unit>.Failure("The person for whom you want to crete files could not be found");
+                    return null;
                 }
                 request.File.Person = person;
 
                 _context.Files.Add(request.File);
                 var result = await _context.SaveChangesAsync() > 0;
 
+                if (!result) return Result<Unit>.Failure("Failed to create File"); 
                 return Result<Unit>.Success(Unit.Value);
             }
         }

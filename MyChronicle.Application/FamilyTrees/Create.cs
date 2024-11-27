@@ -33,6 +33,7 @@ namespace MyChronicle.Application.FamilyTrees
                 _context.FamilyTrees.Add(request.FamilyTree);
                 var result = await _context.SaveChangesAsync() > 0;
 
+                if (!result) return Result<Unit>.Failure("Failed to create FamilyTree");
                 return Result<Unit>.Success(Unit.Value);
             }
         }

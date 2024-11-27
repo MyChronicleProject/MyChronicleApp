@@ -2,6 +2,7 @@
 using MediatR;
 using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
+using System;
 
 namespace MyChronicle.Application.Relations
 {
@@ -29,14 +30,14 @@ namespace MyChronicle.Application.Relations
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                if (request.Relation.Id != request.Id)
-                {
-                    return Result<Unit>.Failure("Wrong Id");
-                }
-
                 var relation = await _context.Relations.FindAsync(request.Relation.Id);
 
                 if (relation == null) return null;
+
+                if (relation.Id != request.Id)
+                {
+                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. Relation Id was {relation.Id}");
+                }
 
                 relation.RelationType = request.Relation.RelationType;
                 relation.startDate = request.Relation.startDate ?? relation.startDate;
