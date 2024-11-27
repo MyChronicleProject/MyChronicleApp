@@ -6,12 +6,12 @@ namespace MyChronicle.Application.Files
 {
     public class Details
     {
-        public class Query : IRequest<Result<MyChronicle.Domain.File>>
+        public class Query : IRequest<Result<Domain.File>>
         {
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<MyChronicle.Domain.File>>
+        public class Handler : IRequestHandler<Query, Result<Domain.File>>
         {
             private readonly DataContext _context;
 

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MyChronicle.Application;
 using MyChronicle.Application.Files;
 using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
@@ -21,10 +22,10 @@ namespace MyChronicle.API.Controllers
 
             var result = await _mediator.Send(new List.Query { PersonId = personId });
 
-            if (result == null) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg.Category == ErrorCategory.NotFound) return NotFound();
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest(result.ErrorMsg);
+            return BadRequest(result.ErrorMsg.Message);
         }
 
         [HttpGet("{fileId}")]
@@ -33,19 +34,20 @@ namespace MyChronicle.API.Controllers
 
             var result = await _mediator.Send(new Details.Query { Id = fileId });
 
-            if (result == null) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg.Category == ErrorCategory.NotFound) return NotFound();
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest(result.ErrorMsg);
+            return BadRequest(result.ErrorMsg.Message);
         }
 
         [HttpPost]
         public async Task<IActionResult> PostFile([FromBody] MyChronicle.Domain.File file)
         {
             var result = await _mediator.Send(new Create.Command { File = file });
-            if (result == null) return NotFound();
+
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest(result.ErrorMsg);
+            return BadRequest(result.ErrorMsg!.Message);
         }
 
         [HttpDelete("{fileId}")]
@@ -53,9 +55,9 @@ namespace MyChronicle.API.Controllers
         {
             var result = await _mediator.Send(new Delete.Command { Id = fileId });
 
-            if (result == null) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest(result.ErrorMsg);
+            return BadRequest(result.ErrorMsg!.Message);
         }
 
         [HttpPut("{fileId}")]
@@ -63,9 +65,9 @@ namespace MyChronicle.API.Controllers
         {
             var result = await _mediator.Send(new Edit.Command { File = file, Id = fileId });
 
-            if (result == null) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest(result.ErrorMsg);
+            return BadRequest(result.ErrorMsg!.Message);
         }
     }
 
