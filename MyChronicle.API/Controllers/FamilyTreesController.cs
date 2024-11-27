@@ -19,7 +19,7 @@ namespace MyChronicle.API.Controllers
         {
             var result = await _mediator.Send(new List.Query());
 
-            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
             return BadRequest(result.ErrorMsg!.Message);
@@ -30,7 +30,7 @@ namespace MyChronicle.API.Controllers
         {
             var result = await _mediator.Send(new Details.Query { Id = treeId });
 
-            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
             return BadRequest(result.ErrorMsg!.Message);
@@ -41,7 +41,7 @@ namespace MyChronicle.API.Controllers
         {
             var result = await _mediator.Send(new Create.Command { FamilyTree = familyTree });
 
-            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
             return BadRequest(result.ErrorMsg!.Message);
         }
@@ -51,7 +51,7 @@ namespace MyChronicle.API.Controllers
         {
             var result = await _mediator.Send(new Edit.Command { FamilyTree = familyTree, Id = treeId });
 
-            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
             return BadRequest(result.ErrorMsg!.Message);
         }
@@ -61,7 +61,7 @@ namespace MyChronicle.API.Controllers
         {
             var result = await _mediator.Send(new Delete.Command { Id = treeId });
 
-            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound();
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
             return BadRequest(result.ErrorMsg!.Message);
         }
