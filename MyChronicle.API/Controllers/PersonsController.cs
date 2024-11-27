@@ -22,7 +22,7 @@ namespace MyChronicle.API.Controllers
             if (result == null) return NotFound();
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpGet("{personId}")]
@@ -33,7 +33,7 @@ namespace MyChronicle.API.Controllers
             if (result == null) return NotFound();
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpPost]
@@ -43,7 +43,7 @@ namespace MyChronicle.API.Controllers
 
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpPut("{personId}")]
@@ -53,7 +53,7 @@ namespace MyChronicle.API.Controllers
 
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpDelete("{personId}")]
@@ -63,7 +63,7 @@ namespace MyChronicle.API.Controllers
 
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
     }
 }

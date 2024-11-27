@@ -21,7 +21,7 @@ namespace MyChronicle.API.Controllers
             if (result == null) return NotFound();
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpGet("{treeId}")]
@@ -32,7 +32,7 @@ namespace MyChronicle.API.Controllers
             if (result == null) return NotFound();
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpPost]
@@ -42,7 +42,7 @@ namespace MyChronicle.API.Controllers
             
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpPut("{treeId}")]
@@ -52,7 +52,7 @@ namespace MyChronicle.API.Controllers
 
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
 
         [HttpDelete("{treeId}")]
@@ -62,7 +62,7 @@ namespace MyChronicle.API.Controllers
 
             if (result == null) return NotFound();
             if (result.IsSuccess) return Ok(result.Value);
-            return BadRequest();
+            return BadRequest(result.ErrorMsg);
         }
     }
 }
