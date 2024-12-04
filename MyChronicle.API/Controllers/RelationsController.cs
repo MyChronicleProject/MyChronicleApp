@@ -17,9 +17,9 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRelaitions(Guid treeId,Guid personId)
+        public async Task<IActionResult> GetRelaitions(Guid personId)
         {
-            
+
             var result = await _mediator.Send(new List.Query { PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
@@ -29,10 +29,10 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpGet("{relationId}")]
-        public async Task<IActionResult> GetRelation(Guid treeId, Guid personId,Guid relationId)
+        public async Task<IActionResult> GetRelation(Guid personId, Guid relationId)
         {
 
-            var result = await _mediator.Send(new Details.Query { Id = relationId});
+            var result = await _mediator.Send(new Details.Query { Id = relationId, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
@@ -41,9 +41,9 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostRelation(RelationDTO relationDTO)
+        public async Task<IActionResult> PostRelation(RelationDTO relationDTO, Guid personId)
         {
-            var result = await _mediator.Send(new Create.Command { RelationDTO = relationDTO });
+            var result = await _mediator.Send(new Create.Command { RelationDTO = relationDTO, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
@@ -51,9 +51,9 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpDelete("{relationId}")]
-        public async Task<IActionResult> DeleteRelation(Guid relationId)
+        public async Task<IActionResult> DeleteRelation(Guid relationId, Guid personId)
         {
-            var result = await _mediator.Send(new Delete.Command { Id = relationId });
+            var result = await _mediator.Send(new Delete.Command { Id = relationId, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
@@ -61,9 +61,9 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpPut("{relationId}")]
-        public async Task<IActionResult> PutRelation(Guid relationId, Relation relation, Guid treeId)
+        public async Task<IActionResult> PutRelation(Guid relationId, RelationDTO relationDTO, Guid personId)
         {
-            var result = await _mediator.Send(new Edit.Command { Relation = relation, Id = relationId});
+            var result = await _mediator.Send(new Edit.Command { RelationDTO = relationDTO, Id = relationId, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);

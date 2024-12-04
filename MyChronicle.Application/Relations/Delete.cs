@@ -14,6 +14,7 @@ namespace MyChronicle.Application.Relations
         public class Command : IRequest<Result<Unit>>
         {
             public required Guid Id { get; set; }
+            public required Guid PersonId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -27,6 +28,11 @@ namespace MyChronicle.Application.Relations
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
+                if (request.PersonId != request.Id)
+                {
+                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. Person Id was {request.PersonId}");
+                }
+
                 var relation = await _context.Relations.FindAsync(request.Id);
                 if (relation == null) return Result<Unit>.Failure($"The Relation with Id {request.Id} could not be found", ErrorCategory.NotFound);
 

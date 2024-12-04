@@ -11,13 +11,14 @@ namespace MyChronicle.Application.Relations
         public class Command : IRequest<Result<Unit>>
         {
             public required Guid Id { get; set; }
-            public required Relation Relation { get; set; }
+            public required Guid PersonId { get; set; }
+            public required RelationDTO RelationDTO { get; set; }
         }
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                //RuleFor(x => x.Relation).SetValidator(new RelationDTOValidator());
+                RuleFor(x => x.RelationDTO).SetValidator(new RelationDTOValidator());
             }
         }
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -30,18 +31,17 @@ namespace MyChronicle.Application.Relations
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var relation = await _context.Relations.FindAsync(request.Relation.Id);
-
-                if (relation == null) return Result<Unit>.Failure($"The Relation with Id {request.Relation.Id} could not be found", ErrorCategory.NotFound);
-
-                if (relation.Id != request.Id)
+                if (request.RelationDTO.Id != request.Id)
                 {
-                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. Relation Id was {relation.Id}");
+                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. Relation id was {request.RelationDTO.Id}");
                 }
 
-                relation.RelationType = request.Relation.RelationType;
-                relation.StartDate = request.Relation.StartDate ?? relation.StartDate;
-                relation.EndDate = request.Relation.EndDate ?? relation.EndDate;
+                var relation = await _context.Relations.FindAsync(request.RelationDTO.Id);
+                if (relation == null) return Result<Unit>.Failure($"The Relation with Id {request.RelationDTO.Id} could not be found", ErrorCategory.NotFound);
+
+                relation.RelationType = request.RelationDTO.RelationType;
+                relation.StartDate = request.RelationDTO.StartDate ?? relation.StartDate;
+                relation.EndDate = request.RelationDTO.EndDate ?? relation.EndDate;
 
                 var result = await _context.SaveChangesAsync() > 0;
 

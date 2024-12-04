@@ -40,6 +40,7 @@ namespace MyChronicle.Application.Persons
                 var familyTree = await _context.FamilyTrees.FindAsync(request.FamilyTreeId);
                 if (familyTree == null) return Result<Unit>.Failure($"The FamilyTree with Id {request.FamilyTreeId} could not be found", ErrorCategory.NotFound);
 
+
                 var person = new Person
                 {
                     Id = request.PersonDTO.Id,

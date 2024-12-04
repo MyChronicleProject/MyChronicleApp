@@ -1,11 +1,5 @@
 ﻿using MediatR;
-using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyChronicle.Application.Files
 {
@@ -14,6 +8,7 @@ namespace MyChronicle.Application.Files
         public class Command : IRequest<Result<Unit>>
         {
             public required Guid Id { get; set; }
+            public required Guid PersonId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -28,8 +23,12 @@ namespace MyChronicle.Application.Files
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var file = await _context.Files.FindAsync(request.Id);
-
                 if (file == null) return Result<Unit>.Failure($"The File with Id {request.Id} could not be found", ErrorCategory.NotFound);
+
+                if (file.PersonId != request.PersonId)
+                {
+                    return Result<Unit>.Failure($"Not matching Id. Request PersonId was {request.PersonId}. File PersonId was {file.PersonId}");
+                }
 
                 _context.Remove(file);
                 var result = await _context.SaveChangesAsync() > 0;

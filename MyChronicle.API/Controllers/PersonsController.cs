@@ -48,9 +48,9 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpPut("{personId}")]
-        public async Task<IActionResult> PutPerson(Guid personId, Person person, Guid treeId)
+        public async Task<IActionResult> PutPerson(Guid personId, PersonDTO personDTO, Guid treeId)
         {
-            var result = await _mediator.Send(new Edit.Command { Person = person, Id = personId, FamilyTreeId = treeId });
+            var result = await _mediator.Send(new Edit.Command { PersonDTO = personDTO, Id = personId, FamilyTreeId = treeId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);

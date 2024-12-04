@@ -9,6 +9,7 @@ namespace MyChronicle.Application.Relations
     {
         public class Command : IRequest<Result<Unit>>
         {
+            public required Guid PersonId { get; set; }
             public required RelationDTO RelationDTO {  get; set; }
         }
 
@@ -31,6 +32,11 @@ namespace MyChronicle.Application.Relations
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
+                if (request.RelationDTO.PersonId_1 != request.PersonId && request.RelationDTO.PersonId_2 != request.PersonId)
+                {
+                    return Result<Unit>.Failure($"Not matching Id. Request PeronsId was {request.PersonId}. Request RelationId.PersonId_1 was {request.RelationDTO.PersonId_1}. Request RelationId.PersonId_2 was {request.RelationDTO.PersonId_2}.");
+                }
+
                 if (request.RelationDTO.PersonId_1 == request.RelationDTO.PersonId_2)
                 {
                     return Result<Unit>.Failure("You cannot create a relationship between one person");
