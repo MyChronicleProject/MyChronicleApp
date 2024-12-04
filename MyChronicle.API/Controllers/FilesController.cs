@@ -7,7 +7,7 @@ using MyChronicle.Infrastructure;
 
 namespace MyChronicle.API.Controllers
 {
-    [Route("api/FamilyTrees/{treeId}/Person/{personId}/[controller]")]
+    [Route("api/FamilyTrees/{treeId}/Persons/{personId}/[controller]")]
     public class FilesController : BaseAPIController
     {
         private readonly IMediator _mediator;
@@ -17,33 +17,33 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetFiles(Guid treeId, Guid personId)
+        public async Task<IActionResult> GetFiles(Guid personId)
         {
 
             var result = await _mediator.Send(new List.Query { PersonId = personId });
 
-            if (!result.IsSuccess && result.ErrorMsg.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest(result.ErrorMsg.Message);
+            return BadRequest(result.ErrorMsg!.Message);
         }
 
         [HttpGet("{fileId}")]
-        public async Task<IActionResult> GetFile(Guid treeId, Guid personId, Guid fileId)
+        public async Task<IActionResult> GetFile(Guid personId, Guid fileId)
         {
 
-            var result = await _mediator.Send(new Details.Query { Id = fileId });
+            var result = await _mediator.Send(new Details.Query { Id = fileId, PersonId = personId });
 
-            if (!result.IsSuccess && result.ErrorMsg.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
             if (result.IsSuccess && result.Value == null) return NotFound();
-            return BadRequest(result.ErrorMsg.Message);
+            return BadRequest(result.ErrorMsg!.Message);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostFile([FromBody] MyChronicle.Domain.File file)
+        public async Task<IActionResult> PostFile(FileDTO fileDTO, Guid personId)
         {
-            var result = await _mediator.Send(new Create.Command { File = file });
+            var result = await _mediator.Send(new Create.Command { FileDTO = fileDTO, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
@@ -51,9 +51,9 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpDelete("{fileId}")]
-        public async Task<IActionResult> DeleteFile(Guid fileId)
+        public async Task<IActionResult> DeleteFile(Guid fileId, Guid personId)
         {
-            var result = await _mediator.Send(new Delete.Command { Id = fileId });
+            var result = await _mediator.Send(new Delete.Command { Id = fileId, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
@@ -61,9 +61,9 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpPut("{fileId}")]
-        public async Task<IActionResult> PutFile(Guid fileId, Domain.File file, Guid treeId)
+        public async Task<IActionResult> PutFile(Guid fileId, FileDTO fileDTO, Guid personId)
         {
-            var result = await _mediator.Send(new Edit.Command { File = file, Id = fileId });
+            var result = await _mediator.Send(new Edit.Command { FileDTO = fileDTO, Id = fileId, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);

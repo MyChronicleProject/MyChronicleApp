@@ -1,11 +1,10 @@
 ﻿using FluentValidation;
-using MyChronicle.Domain;
 
 namespace MyChronicle.Application.Files
 {
-    public class FileValidator : AbstractValidator<MyChronicle.Domain.File>
+    public class FileDTOValidator : AbstractValidator<FileDTO>
     {
-        public FileValidator()
+        public FileDTOValidator()
         {
             RuleFor(x => x.FileType).IsInEnum().WithMessage("Invalid file type.");
             RuleFor(x => x.PersonId).NotEmpty().WithMessage("PersonId is required.");

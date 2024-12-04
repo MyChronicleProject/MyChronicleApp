@@ -4,19 +4,13 @@ namespace MyChronicle.Domain
 {
     public class FamilyTree
     {
-        public FamilyTree()
-        {
-            this.FamilyTreePermision    = new HashSet<FamilyTreePermision>();
-            this.Person                 = new HashSet<Person>();
-        }
-
-        public Guid     Id   { get; set; }
+        public Guid Id { get; set; }
 
         [Column(TypeName = "VARCHAR(255)")]
-        public string   Name { get; set; }
+        public string Name { get; set; }
 
 
-        public virtual ICollection<FamilyTreePermision> FamilyTreePermision { get; set; }
-        public virtual ICollection<Person>              Person              { get; set; }
+        public ICollection<FamilyTreePermision> FamilyTreePermisions { get; set; } = [];
+        public ICollection<Person> Persons { get; set; } = [];
     }
 }

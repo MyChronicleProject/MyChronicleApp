@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
 using MediatR;
-using MyChronicle.Application.Relations;
-using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
 
 namespace MyChronicle.Application.Files
@@ -10,14 +8,16 @@ namespace MyChronicle.Application.Files
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public required MyChronicle.Domain.File File { get; set; }
+            public required Guid PersonId { get; set; }
+            public required FileDTO FileDTO { get; set; }
+
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.File).SetValidator(new FileValidator());
+                RuleFor(x => x.FileDTO).SetValidator(new FileDTOValidator());
             }
         }
 
@@ -32,12 +32,26 @@ namespace MyChronicle.Application.Files
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var person = await _context.Persons.FindAsync(request.File.PersonId);
+                if (request.FileDTO.PersonId != request.PersonId)
+                {
+                    return Result<Unit>.Failure($"Not matching Id. Request PersonId was {request.PersonId}. Request File PersonId was {request.FileDTO.PersonId}");
+                }
 
-                if (person == null) return Result<Unit>.Failure($"The Person with Id {person.Id} could not be found", ErrorCategory.NotFound);
-                request.File.Person = person;
+                var person = await _context.Persons.FindAsync(request.PersonId);
+                if (person == null) return Result<Unit>.Failure($"The Person with Id {request.FileDTO.Id} could not be found", ErrorCategory.NotFound);
 
-                _context.Files.Add(request.File);
+                var file = new Domain.File
+                {
+                    Id = request.FileDTO.Id,
+                    Name = request.FileDTO.Name,
+                    FileType = request.FileDTO.FileType,
+                    Content = request.FileDTO.Content,
+                    FileExtension = request.FileDTO.FileExtension,
+                    PersonId = request.PersonId,
+                    Person = person
+                };
+
+                _context.Files.Add(file);
                 var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result) return Result<Unit>.Failure("Failed to create File"); 

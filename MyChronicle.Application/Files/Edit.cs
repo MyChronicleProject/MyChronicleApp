@@ -1,13 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
-using MyChronicle.Application.Relations;
-using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyChronicle.Application.Files
 {
@@ -16,13 +9,14 @@ namespace MyChronicle.Application.Files
         public class Command : IRequest<Result<Unit>>
         {
             public required Guid Id { get; set; }
-            public required MyChronicle.Domain.File File { get; set; }
+            public required Guid PersonId { get; set; }
+            public required FileDTO FileDTO { get; set; }
         }
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.File).SetValidator(new FileValidator());
+                RuleFor(x => x.FileDTO).SetValidator(new FileDTOValidator());
             }
         }
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -35,17 +29,18 @@ namespace MyChronicle.Application.Files
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var file = await _context.Files.FindAsync(request.File.Id);
-                if (file == null) return Result<Unit>.Failure($"The File with Id {request.Id} could not be found", ErrorCategory.NotFound);
-
-                if (file.Id != request.Id)
+                if (request.FileDTO.Id != request.Id)
                 {
-                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. File id was {file.Id}");
+                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. File id was {request.FileDTO.Id}");
                 }
 
-                file.Content = request.File.Content;
-                file.FileType = request.File.FileType;
-                file.FileExtension = request.File.FileExtension;
+                var file = await _context.Files.FindAsync(request.Id);
+                if (file == null) return Result<Unit>.Failure($"The File with Id {request.Id} could not be found", ErrorCategory.NotFound);
+
+                file.Content = request.FileDTO.Content;
+                file.FileType = request.FileDTO.FileType;
+                file.FileExtension = request.FileDTO.FileExtension;
+                file.Name = request.FileDTO.Name;
 
                 var result = await _context.SaveChangesAsync() > 0;
 
