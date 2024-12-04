@@ -32,7 +32,7 @@ namespace MyChronicle.API.Controllers
         public async Task<IActionResult> GetFile(Guid personId, Guid fileId)
         {
 
-            var result = await _mediator.Send(new Details.Query { Id = fileId, PersonId = fileId });
+            var result = await _mediator.Send(new Details.Query { Id = fileId, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);

@@ -40,6 +40,7 @@ namespace MyChronicle.Application.Files
                 file.Content = request.FileDTO.Content;
                 file.FileType = request.FileDTO.FileType;
                 file.FileExtension = request.FileDTO.FileExtension;
+                file.Name = request.FileDTO.Name;
 
                 var result = await _context.SaveChangesAsync() > 0;
 

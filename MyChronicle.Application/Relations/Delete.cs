@@ -28,13 +28,13 @@ namespace MyChronicle.Application.Relations
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                if (request.PersonId != request.Id)
-                {
-                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. Person Id was {request.PersonId}");
-                }
-
                 var relation = await _context.Relations.FindAsync(request.Id);
                 if (relation == null) return Result<Unit>.Failure($"The Relation with Id {request.Id} could not be found", ErrorCategory.NotFound);
+
+                if (request.PersonId != relation.PersonId_1 && request.PersonId != relation.PersonId_2)
+                {
+                    return Result<Unit>.Failure($"Not matching Id. Request PersonId was {request.PersonId}. Relation PersonId_1 was {relation.PersonId_1}. Relation PersonId_2 was {relation.PersonId_2}");
+                }
 
                 _context.Remove(relation);
                 var result = await _context.SaveChangesAsync() > 0;
