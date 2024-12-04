@@ -4,11 +4,6 @@ namespace MyChronicle.Domain
 {
     public class User
     {
-        public User()
-        {
-            this.AkcessTokens = new HashSet<AkcessToken>();
-            this.RefreshToken = new HashSet<RefreshToken>();
-        }
         public Guid Id { get; set; }
         [Column(TypeName = "VARCHAR(255)")]
         public string Login { get; set; }
@@ -19,7 +14,7 @@ namespace MyChronicle.Domain
         [Column(TypeName = "VARCHAR(255)")]
         public string LastName { get; set; }
 
-        public virtual ICollection<AkcessToken> AkcessTokens { get; set; }
-        public virtual ICollection<RefreshToken> RefreshToken { get; set; }
+        public ICollection<AccessToken> AkcessTokens { get; set; } = [];
+        public ICollection<RefreshToken> RefreshToken { get; set; } = [];
     }
 }

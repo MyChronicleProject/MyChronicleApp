@@ -22,7 +22,7 @@ namespace MyChronicle.Application.Files
         {
             public CommandValidator()
             {
-                RuleFor(x => x.File).SetValidator(new FileValidator());
+                //RuleFor(x => x.File).SetValidator(new FileDTOValidator());
             }
         }
         public class Handler : IRequestHandler<Command, Result<Unit>>

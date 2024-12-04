@@ -16,7 +16,7 @@ namespace MyChronicle.Application.FamilyTrees
         {
             public CommandValidator()
             {
-                RuleFor(x => x.FamilyTree).SetValidator(new FamilyTreeValidator());
+                //RuleFor(x => x.FamilyTree).SetValidator(new FamilyTreeDTOValidator());
             }
         }
 

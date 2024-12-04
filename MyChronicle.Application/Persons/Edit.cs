@@ -13,13 +13,13 @@ namespace MyChronicle.Application.Persons
             public required Guid Id { get; set; }
             public required Person Person { get; set; }
         }
-        public class CommandValidator : AbstractValidator<Command>
-        {
-            public CommandValidator()
-            {
-                RuleFor(x => x.Person).SetValidator(new PersonValidator());
-            }
-        }
+        //public class CommandValidator : AbstractValidator<Command>
+        //{
+        //    public CommandValidator()
+        //    {
+        //        RuleFor(x => x.Person).SetValidator(new PersonValidator());
+        //    }
+        //}
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {

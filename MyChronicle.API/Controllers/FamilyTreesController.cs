@@ -37,9 +37,9 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostFamilyTree(FamilyTree familyTree)
+        public async Task<IActionResult> PostFamilyTree(FamilyTreeDTO familyTreeDTO)
         {
-            var result = await _mediator.Send(new Create.Command { FamilyTree = familyTree });
+            var result = await _mediator.Send(new Create.Command { FamilyTreeDTO = familyTreeDTO });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);

@@ -1,10 +1,8 @@
-﻿using System.Text.Json.Serialization;
+﻿using MyChronicle.Domain;
 
-namespace MyChronicle.Domain
+namespace MyChronicle.Application.Files
 {
-    public enum FileType { Image, Audio, Document }
-    public enum FileExtension { jpg, png, mp3, pdf, docx }
-    public class File
+    public class FileDTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -12,8 +10,5 @@ namespace MyChronicle.Domain
         public Guid PersonId { get; set; }
         public byte[] Content { get; set; }
         public FileExtension FileExtension { get; set; }
-
-        [JsonIgnore]
-        public Person Person { get; set; } = null;
     }
 }

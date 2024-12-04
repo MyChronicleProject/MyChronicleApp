@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace MyChronicle.Domain
 {
@@ -11,6 +12,9 @@ namespace MyChronicle.Domain
         public DateTime Expired { get; set; }
         public DateTime Created { get; set; }
         public Boolean IsRevoked { get; set; }
+
+        [JsonIgnore]
+        public User User { get; set; } = null!;
 
     }
 }

@@ -59,6 +59,7 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseCors("CorsPolicy");
 
 app.MapControllers();
 
@@ -67,11 +68,9 @@ var service = scope.ServiceProvider;
 
 try
 {
-
     var context = service.GetRequiredService<DataContext>();
     context.Database.Migrate();
     await Seed.SeedData(context);
-
 }
 catch (Exception ex)
 {

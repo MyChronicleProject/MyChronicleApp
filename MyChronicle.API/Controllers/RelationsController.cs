@@ -7,7 +7,7 @@ using MyChronicle.Infrastructure;
 
 namespace MyChronicle.API.Controllers
 {
-    [Route("api/FamilyTrees/{treeId}/Person/{personId}/[controller]")]
+    [Route("api/FamilyTrees/{treeId}/Persons/{personId}/[controller]")]
     public class RelationsController : BaseAPIController
     {
         private readonly IMediator _mediator;
@@ -41,9 +41,9 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostRelation([FromBody] Relation relation)
+        public async Task<IActionResult> PostRelation(RelationDTO relationDTO)
         {
-            var result = await _mediator.Send(new Create.Command { Relation = relation });
+            var result = await _mediator.Send(new Create.Command { RelationDTO = relationDTO });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);

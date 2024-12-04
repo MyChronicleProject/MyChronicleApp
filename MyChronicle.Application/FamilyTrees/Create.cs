@@ -9,13 +9,13 @@ namespace MyChronicle.Application.FamilyTrees
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public required FamilyTree FamilyTree { get; set; }
+            public required FamilyTreeDTO FamilyTreeDTO { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator() {
-                RuleFor(x => x.FamilyTree).SetValidator(new FamilyTreeValidator());
+                RuleFor(x => x.FamilyTreeDTO).SetValidator(new FamilyTreeDTOValidator());
             }
         }
 
@@ -30,7 +30,13 @@ namespace MyChronicle.Application.FamilyTrees
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                _context.FamilyTrees.Add(request.FamilyTree);
+                var familyTree = new FamilyTree
+                {
+                    Id = request.FamilyTreeDTO.Id,
+                    Name = request.FamilyTreeDTO.Name
+                };
+
+                _context.FamilyTrees.Add(familyTree);
                 var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result) return Result<Unit>.Failure("Failed to create FamilyTree");

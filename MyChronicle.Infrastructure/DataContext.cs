@@ -10,7 +10,7 @@ namespace MyChronicle.Infrastructure
         public DbSet<FamilyTree> FamilyTrees { get; set; }
 
         public DbSet<Person> Persons { get; set; }
-        public DbSet<AkcessToken> AkcessTokens { get; set; }
+        public DbSet<AccessToken> AccessTokens { get; set; }
         public DbSet<FamilyTreePermision> FamilyTreePermisions { get; set; }
         public DbSet<Domain.File> Files { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }

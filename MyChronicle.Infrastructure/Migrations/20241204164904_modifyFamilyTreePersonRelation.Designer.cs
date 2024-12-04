@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyChronicle.Infrastructure;
 
@@ -11,9 +12,11 @@ using MyChronicle.Infrastructure;
 namespace MyChronicle.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241204164904_modifyFamilyTreePersonRelation")]
+    partial class modifyFamilyTreePersonRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace MyChronicle.Infrastructure.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("MyChronicle.Domain.AccessToken", b =>
+            modelBuilder.Entity("MyChronicle.Domain.AkcessToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,7 +48,7 @@ namespace MyChronicle.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AccessTokens");
+                    b.ToTable("AkcessTokens");
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTree", b =>
@@ -75,6 +78,9 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("FamilyTreeId");
@@ -97,10 +103,6 @@ namespace MyChronicle.Infrastructure.Migrations
 
                     b.Property<int>("FileType")
                         .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<Guid>("PersonId")
                         .HasColumnType("char(36)");
@@ -197,9 +199,6 @@ namespace MyChronicle.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateOnly?>("EndDate")
-                        .HasColumnType("date");
-
                     b.Property<Guid>("PersonId_1")
                         .HasColumnType("char(36)");
 
@@ -209,7 +208,10 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Property<int>("RelationType")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly?>("StartDate")
+                    b.Property<DateOnly?>("endDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("startDate")
                         .HasColumnType("date");
 
                     b.HasKey("Id");
@@ -253,15 +255,13 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.AccessToken", b =>
+            modelBuilder.Entity("MyChronicle.Domain.AkcessToken", b =>
                 {
-                    b.HasOne("MyChronicle.Domain.User", "User")
+                    b.HasOne("MyChronicle.Domain.User", null)
                         .WithMany("AkcessTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTreePermision", b =>
@@ -299,13 +299,11 @@ namespace MyChronicle.Infrastructure.Migrations
 
             modelBuilder.Entity("MyChronicle.Domain.RefreshToken", b =>
                 {
-                    b.HasOne("MyChronicle.Domain.User", "User")
+                    b.HasOne("MyChronicle.Domain.User", null)
                         .WithMany("RefreshToken")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.Relation", b =>

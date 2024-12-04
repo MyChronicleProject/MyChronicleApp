@@ -17,7 +17,7 @@ namespace MyChronicle.Application.Relations
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Relation).SetValidator(new RelationValidator());
+                //RuleFor(x => x.Relation).SetValidator(new RelationDTOValidator());
             }
         }
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -40,8 +40,8 @@ namespace MyChronicle.Application.Relations
                 }
 
                 relation.RelationType = request.Relation.RelationType;
-                relation.startDate = request.Relation.startDate ?? relation.startDate;
-                relation.endDate = request.Relation.endDate ?? relation.endDate;
+                relation.StartDate = request.Relation.StartDate ?? relation.StartDate;
+                relation.EndDate = request.Relation.EndDate ?? relation.EndDate;
 
                 var result = await _context.SaveChangesAsync() > 0;
 
