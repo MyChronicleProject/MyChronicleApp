@@ -42,6 +42,7 @@ namespace MyChronicle.Application.FamilyTrees
                 if (!result) return Result<Unit>.Failure("Failed to create FamilyTree");
                 return Result<Unit>.Success(Unit.Value);
             }
+
         }
     }
 }

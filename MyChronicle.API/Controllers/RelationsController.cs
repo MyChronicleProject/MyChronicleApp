@@ -4,9 +4,11 @@ using MyChronicle.Application;
 using MyChronicle.Application.Relations;
 using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
+using System.Diagnostics.Eventing.Reader;
 
 namespace MyChronicle.API.Controllers
 {
+   
     [Route("api/FamilyTrees/{treeId}/Persons/{personId}/[controller]")]
     public class RelationsController : BaseAPIController
     {
@@ -16,10 +18,10 @@ namespace MyChronicle.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetRelaitions(Guid personId)
-        {
 
+        [HttpGet]
+        public async Task<IActionResult> GetRelaitions(Guid treeId,Guid personId)
+        {
             var result = await _mediator.Send(new List.Query { PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
@@ -67,6 +69,29 @@ namespace MyChronicle.API.Controllers
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
+            return BadRequest(result.ErrorMsg!.Message);
+        }
+    }
+
+    [Route("api/FamilyTrees/{treeId}/[controller]")]
+    public class RelationsControllerForOneTree : BaseAPIController
+    {
+        private readonly IMediator _mediator;
+
+        public RelationsControllerForOneTree(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRelaitionsForOneTree(Guid treeId)
+        {
+            var result = await _mediator.Send(new ListForOneTree.Query { FamilyTreeId = treeId });
+
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound)
+                return NotFound(result.ErrorMsg!.Message);
+            if (result.IsSuccess && result.Value != null) return Ok(result.Value);
+            if (result.IsSuccess && result.Value == null) return NotFound();
             return BadRequest(result.ErrorMsg!.Message);
         }
     }
