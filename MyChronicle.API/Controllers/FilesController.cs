@@ -1,24 +1,26 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MyChronicle.Application;
-using MyChronicle.Application.Persons;
+using MyChronicle.Application.Files;
 using MyChronicle.Domain;
+using MyChronicle.Infrastructure;
 
 namespace MyChronicle.API.Controllers
 {
-    [Route("api/FamilyTrees/{treeId}/[controller]")]
-    public class PersonsController : BaseAPIController
+    [Route("api/FamilyTrees/{treeId}/Persons/{personId}/[controller]")]
+    public class FilesController : BaseAPIController
     {
         private readonly IMediator _mediator;
-        public PersonsController(IMediator mediator)
+        public FilesController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPersons(Guid treeId)
+        public async Task<IActionResult> GetFiles(Guid personId)
         {
-            var result = await _mediator.Send(new List.Query { FamilyTreeId = treeId });
+
+            var result = await _mediator.Send(new List.Query { PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
@@ -26,10 +28,11 @@ namespace MyChronicle.API.Controllers
             return BadRequest(result.ErrorMsg!.Message);
         }
 
-        [HttpGet("{personId}")]
-        public async Task<IActionResult> GetPerson(Guid treeId, Guid personId)
+        [HttpGet("{fileId}")]
+        public async Task<IActionResult> GetFile(Guid personId, Guid fileId)
         {
-            var result = await _mediator.Send(new Details.Query { Id = personId, FamilyTreeId = treeId });
+
+            var result = await _mediator.Send(new Details.Query { Id = fileId, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
@@ -38,33 +41,35 @@ namespace MyChronicle.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostPerson(PersonDTO personDTO, Guid treeId)
+        public async Task<IActionResult> PostFile(FileDTO fileDTO, Guid personId)
         {
-            var result = await _mediator.Send(new Create.Command { PersonDTO = personDTO, FamilyTreeId = treeId });
+            var result = await _mediator.Send(new Create.Command { FileDTO = fileDTO, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
             return BadRequest(result.ErrorMsg!.Message);
         }
 
-        [HttpPut("{personId}")]
-        public async Task<IActionResult> PutPerson(Guid personId, PersonDTO personDTO, Guid treeId)
+        [HttpDelete("{fileId}")]
+        public async Task<IActionResult> DeleteFile(Guid fileId, Guid personId)
         {
-            var result = await _mediator.Send(new Edit.Command { PersonDTO = personDTO, Id = personId, FamilyTreeId = treeId });
+            var result = await _mediator.Send(new Delete.Command { Id = fileId, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
             return BadRequest(result.ErrorMsg!.Message);
         }
 
-        [HttpDelete("{personId}")]
-        public async Task<IActionResult> DeletePerson(Guid personId, Guid treeId)
+        [HttpPut("{fileId}")]
+        public async Task<IActionResult> PutFile(Guid fileId, FileDTO fileDTO, Guid personId)
         {
-            var result = await _mediator.Send(new Delete.Command { Id = personId, FamilyTreeId = treeId });
+            var result = await _mediator.Send(new Edit.Command { FileDTO = fileDTO, Id = fileId, PersonId = personId });
 
             if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
             if (result.IsSuccess) return Ok(result.Value);
             return BadRequest(result.ErrorMsg!.Message);
         }
     }
+
+
 }

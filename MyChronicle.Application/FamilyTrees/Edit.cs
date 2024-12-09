@@ -16,7 +16,7 @@ namespace MyChronicle.Application.FamilyTrees
         {
             public CommandValidator()
             {
-                RuleFor(x => x.FamilyTree).SetValidator(new FamilyTreeValidator());
+                //RuleFor(x => x.FamilyTree).SetValidator(new FamilyTreeDTOValidator());
             }
         }
 
@@ -32,11 +32,11 @@ namespace MyChronicle.Application.FamilyTrees
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var familyTree = await _context.FamilyTrees.FindAsync(request.FamilyTree.Id);
-                if (familyTree == null) return null;
+                if (familyTree == null) return Result<Unit>.Failure($"The FamilyTree with Id {request.Id} could not be found", ErrorCategory.NotFound);
 
                 if (familyTree.Id != request.Id)
                 {
-                    return Result<Unit>.Failure("Bad FamilyTreeId");
+                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. FamilyTree id was {familyTree.Id}");
                 }
 
                 familyTree.Name = request.FamilyTree.Name ?? familyTree.Name;

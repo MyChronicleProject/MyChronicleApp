@@ -11,13 +11,13 @@ namespace MyChronicle.Application.Persons
         {
             public required Guid FamilyTreeId { get; set; }
             public required Guid Id { get; set; }
-            public required Person Person { get; set; }
+            public required PersonDTO PersonDTO { get; set; }
         }
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Person).SetValidator(new PersonValidator());
+                RuleFor(x => x.PersonDTO).SetValidator(new PersonDTOValidator());
             }
         }
 
@@ -32,29 +32,29 @@ namespace MyChronicle.Application.Persons
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                if (request.Person.Id != request.Id)
+                if (request.PersonDTO.Id != request.Id)
                 {
-                    return Result<Unit>.Failure("Wrong Id");
+                    return Result<Unit>.Failure($"Not matching Id. Request Id was {request.Id}. Person Id was {request.PersonDTO.Id}");
                 }
 
-                var person = await _context.Persons.FindAsync(request.Person.Id);
-                if (person == null) return null;
-
-                if (person.FamilyTreeId != request.FamilyTreeId)
+                if (request.PersonDTO.FamilyTreeId != request.FamilyTreeId)
                 {
-                    return Result<Unit>.Failure("Bad FamilyTreeId");
+                    return Result<Unit>.Failure($"Not matching Id. Request FamilyTreeId was {request.FamilyTreeId}. Person FamilyTreeId was {request.PersonDTO.FamilyTreeId}");
                 }
 
-                person.Name = request.Person.Name ?? person.Name;
-                person.MiddleName = request.Person.MiddleName ?? person.MiddleName;
-                person.LastName = request.Person.LastName ?? person.LastName;
-                person.BirthDate = request.Person.BirthDate;
-                person.DeathDate = request.Person.DeathDate;
-                person.BirthPlace = request.Person.BirthPlace ?? person.BirthPlace;
-                person.DeathPlace = request.Person.DeathPlace ?? person.DeathPlace;
-                person.Gender = request.Person.Gender;
-                person.Occupation = request.Person.Occupation ?? person.Occupation;
-                person.Note = request.Person.Note ?? person.Note;
+                var person = await _context.Persons.FindAsync(request.Id);
+                if (person == null) return Result<Unit>.Failure($"The Person with Id {request.Id} could not be found", ErrorCategory.NotFound);
+
+                person.Name = request.PersonDTO.Name ?? person.Name;
+                person.MiddleName = request.PersonDTO.MiddleName ?? person.MiddleName;
+                person.LastName = request.PersonDTO.LastName ?? person.LastName;
+                person.BirthDate = request.PersonDTO.BirthDate;
+                person.DeathDate = request.PersonDTO.DeathDate;
+                person.BirthPlace = request.PersonDTO.BirthPlace ?? person.BirthPlace;
+                person.DeathPlace = request.PersonDTO.DeathPlace ?? person.DeathPlace;
+                person.Gender = request.PersonDTO.Gender;
+                person.Occupation = request.PersonDTO.Occupation ?? person.Occupation;
+                person.Note = request.PersonDTO.Note ?? person.Note;
 
                 var result = await _context.SaveChangesAsync() > 0;
 

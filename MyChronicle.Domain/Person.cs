@@ -1,16 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.Json.Serialization;
 
 namespace MyChronicle.Domain
 {
     public enum Gender { Male, Female, NonBinary, Unspecified }
     public class Person
     {
-        public Person()
-        {
-            this.RelationsAsPerson1 = new HashSet<Relation>();
-            this.RelationsAsPerson2 = new HashSet<Relation>();
-            this.Files = new HashSet<File>();
-        }
         public Guid Id { get; set; }
         [Column(TypeName = "VARCHAR(255)")]
         public string Name { get; set; }
@@ -32,9 +28,12 @@ namespace MyChronicle.Domain
         public string? Note { get; set; }
         public Guid FamilyTreeId { get; set; }
 
-        public virtual ICollection<Relation> RelationsAsPerson1 { get; set; }
-        public virtual ICollection<Relation> RelationsAsPerson2 { get; set; }
-        public virtual ICollection<File> Files { get; set; }
+        [JsonIgnore]
+        public FamilyTree FamilyTree { get; set; } = null!;
+
+        public ICollection<Relation> RelationsAsPerson1 { get; set; } = [];
+        public ICollection<Relation> RelationsAsPerson2 { get; set; } = [];
+        public ICollection<File> Files { get; set; } = [];
 
     }
 }

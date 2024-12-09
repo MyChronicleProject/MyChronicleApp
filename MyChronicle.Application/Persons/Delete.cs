@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
 
 namespace MyChronicle.Application.Persons
@@ -23,16 +24,17 @@ namespace MyChronicle.Application.Persons
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var person = await _context.Persons.FindAsync(request.Id);
+                if (person == null) return Result<Unit>.Failure($"The Person with Id {request.Id} could not be found", ErrorCategory.NotFound);
 
                 if (person.FamilyTreeId != request.FamilyTreeId)
                 {
-                    return Result<Unit>.Failure("Bad FamilyTreeId");
+                    return Result<Unit>.Failure($"Not matching Id. Request FamilyTreeId was {request.FamilyTreeId}. Person FamilyTreeId was {person.FamilyTreeId}");
                 }
 
                 _context.Remove(person);
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure("Failed to delete the familyTree");
+                if (!result) return Result<Unit>.Failure("Failed to delete the person");
                 return Result<Unit>.Success(Unit.Value);
             }
         }

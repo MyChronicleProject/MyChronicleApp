@@ -1,11 +1,10 @@
 ﻿using FluentValidation;
-using MyChronicle.Domain;
 
 namespace MyChronicle.Application.Persons
 {
-    public class PersonValidator : AbstractValidator<Person>
+    public class PersonDTOValidator : AbstractValidator<PersonDTO>
     {
-        public PersonValidator()
+        public PersonDTOValidator()
         {
             RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");
             RuleFor(x => x.LastName).NotEmpty().WithMessage("LastName is required");

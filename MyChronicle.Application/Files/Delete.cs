@@ -1,14 +1,14 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using MyChronicle.Infrastructure;
 
-namespace MyChronicle.Application.FamilyTrees
+namespace MyChronicle.Application.Files
 {
     public class Delete
     {
         public class Command : IRequest<Result<Unit>>
         {
             public required Guid Id { get; set; }
+            public required Guid PersonId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -22,13 +22,18 @@ namespace MyChronicle.Application.FamilyTrees
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var familyTree = await _context.FamilyTrees.FindAsync(request.Id);
-                if (familyTree == null) return Result<Unit>.Failure($"The FamilyTree with Id {request.Id} could not be found", ErrorCategory.NotFound);
+                var file = await _context.Files.FindAsync(request.Id);
+                if (file == null) return Result<Unit>.Failure($"The File with Id {request.Id} could not be found", ErrorCategory.NotFound);
 
-                _context.Remove(familyTree);
+                if (file.PersonId != request.PersonId)
+                {
+                    return Result<Unit>.Failure($"Not matching Id. Request PersonId was {request.PersonId}. File PersonId was {file.PersonId}");
+                }
+
+                _context.Remove(file);
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure($"Failed to delete the FamilyTree, id: {familyTree.Id}");
+                if (!result) return Result<Unit>.Failure($"Failed to delete the File, id: {file.Id}");
                 return Result<Unit>.Success(Unit.Value);
             }
         }
