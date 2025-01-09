@@ -1,13 +1,14 @@
-﻿using MyChronicle.Domain;
+﻿using Microsoft.AspNetCore.Identity;
+using MyChronicle.Domain;
 
 namespace MyChronicle.Infrastructure
 {
     public class Seed
     {
-        public static async Task SeedData(DataContext context)
+        public static async Task SeedData(DataContext context, UserManager<AppUser> userManager)
         {
             await SeedFamilyTrees(context);
-            //await SeedUsers(context);
+            await SeedUsers(userManager);
             await SeedPersons(context);
         }
         private static async Task SeedFamilyTrees(DataContext context)
@@ -39,20 +40,22 @@ namespace MyChronicle.Infrastructure
             await context.SaveChangesAsync();
         }
 
-        private static async Task SeedUsers(DataContext context)
+        private static async Task SeedUsers(UserManager<AppUser> userManager)
         {
-            if (context.Users.Any()) return;
+            if (!userManager.Users.Any()) return;
 
-            var users = new List<User>
+            var users = new List<AppUser>
             {
-                new User {
-                    FirstName = "John", LastName = "Doe", Login = "test", PasswordHash = "test" },
-                new User {
-                    FirstName = "Anna", LastName = "Nowak", Login="user", PasswordHash = "user" },
+                new AppUser {
+                    FirstName = "John", LastName = "Doe", Email = "test@example.com", PasswordHash = "test" },
+                new AppUser {
+                    FirstName = "Anna", LastName = "Nowak", Email="user@example.com", PasswordHash = "user" },
             };
 
-            await context.Users.AddRangeAsync(users);
-            await context.SaveChangesAsync();
+            foreach (var user in users)
+            {
+                await userManager.CreateAsync(user);
+            }
         }
 
 
