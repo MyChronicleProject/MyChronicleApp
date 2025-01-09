@@ -13,6 +13,8 @@ namespace MyChronicle.API.Services
             }).AddEntityFrameworkStores<DataContext>();
 
             services.AddAuthentication();
+            services.AddScoped<TokenService>();
+
             return services;
         }
     }
