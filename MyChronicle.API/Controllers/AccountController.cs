@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using MyChronicle.API.DTOs;
 using MyChronicle.API.Services;
 using MyChronicle.Domain;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 
 namespace MyChronicle.API.Controllers

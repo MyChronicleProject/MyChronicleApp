@@ -11,12 +11,9 @@ namespace MyChronicle.Infrastructure
         public DbSet<FamilyTree> FamilyTrees { get; set; }
 
         public DbSet<Person> Persons { get; set; }
-        public DbSet<AccessToken> AccessTokens { get; set; }
         public DbSet<FamilyTreePermision> FamilyTreePermisions { get; set; }
         public DbSet<Domain.File> Files { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Relation> Relations { get; set; }
-        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
