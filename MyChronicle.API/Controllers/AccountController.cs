@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.EntityFrameworkCore;
 using MyChronicle.API.DTOs;
 using MyChronicle.API.Services;
 using MyChronicle.Domain;
+using System.Runtime.InteropServices;
+using System.Security.Claims;
 
 namespace MyChronicle.API.Controllers
 {
@@ -19,6 +23,7 @@ namespace MyChronicle.API.Controllers
             _tokenService = tokenService;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO)
         {
@@ -37,6 +42,50 @@ namespace MyChronicle.API.Controllers
             }
 
             return Unauthorized();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<ActionResult<UserDTO>> Register(RegisterDTO registerDTO)
+        {
+            if(await _userManager.Users.AnyAsync(x => x.UserName == registerDTO.UserName))
+            {
+                return BadRequest("Username is taken");
+            }
+
+            var user = new AppUser
+            {
+                FirstName = registerDTO.FirstName,
+                LastName = registerDTO.LastName,
+                Email = registerDTO.Email,
+            };
+
+            var result = await _userManager.CreateAsync(user, registerDTO.Password);
+
+            if (result.Succeeded)
+            {
+                return new UserDTO
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Token = _tokenService.CreateToken(user)
+                };
+            }
+
+            return BadRequest("Problem with user registration");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<UserDTO>> GetCurrentUser()
+        {
+            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+            return new UserDTO
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
     }
 }
