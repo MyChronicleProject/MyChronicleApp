@@ -1,7 +1,0 @@
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=myChronicle;User Id=root;Password=root;",
-    "DockerConnection": "Server=mysql;Database=MyChronicleDatabase;User Id=user;Password=1234;"
-  },
-  "TokenKey": "9Eo9kTJVWDC#Qszk!vCp3oLhjVAYn*Fq95!FZPz%V5AQ%@8NFW6SBCKqe&%ehkqzHPHiq*$hZUAki4Njgj!5@cWSFUtc%xJ*%BcXvDeucE^nNg%eVMpjGCudoK6HQMT4"
-}
