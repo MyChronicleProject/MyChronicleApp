@@ -47,9 +47,9 @@ namespace MyChronicle.Infrastructure
             var users = new List<AppUser>
             {
                 new AppUser {
-                    FirstName = "John", LastName = "Doe", Email = "test@example.com", PasswordHash = "test" },
+                    DisplayName = "John Doe", Email = "test@example.com", PasswordHash = "test" },
                 new AppUser {
-                    FirstName = "Anna", LastName = "Nowak", Email="user@example.com", PasswordHash = "user" },
+                    DisplayName = "Anna Nowak", Email="user@example.com", PasswordHash = "user" },
             };
 
             foreach (var user in users)

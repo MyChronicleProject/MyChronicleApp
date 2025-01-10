@@ -10,9 +10,8 @@ namespace MyChronicle.API.DTOs
         [Required]
         public string Password { get; set; }
         [Required]
-        public string FirstName {  get; set; }
+        public string UserName { get; set; }
         [Required]
-        public string LastName { get; set; }
-        public string UserName { get => FirstName + " " + LastName; }
+        public string DisplayName { get; set; }
     }
 }

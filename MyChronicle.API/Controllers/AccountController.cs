@@ -33,8 +33,7 @@ namespace MyChronicle.API.Controllers
             {
                 return new UserDTO
                 {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
+                    UserName = user.UserName,
                     Token = _tokenService.CreateToken(user)
                 };
             }
@@ -53,9 +52,9 @@ namespace MyChronicle.API.Controllers
 
             var user = new AppUser
             {
-                FirstName = registerDTO.FirstName,
-                LastName = registerDTO.LastName,
                 Email = registerDTO.Email,
+                UserName = registerDTO.UserName,
+                DisplayName = registerDTO.DisplayName,
             };
 
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
@@ -64,8 +63,8 @@ namespace MyChronicle.API.Controllers
             {
                 return new UserDTO
                 {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
+                    UserName = registerDTO.UserName,
+                    DisplayName= registerDTO.DisplayName,
                     Token = _tokenService.CreateToken(user)
                 };
             }
@@ -80,8 +79,7 @@ namespace MyChronicle.API.Controllers
             var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
             return new UserDTO
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                UserName = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
         }
