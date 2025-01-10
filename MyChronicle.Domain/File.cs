@@ -2,7 +2,7 @@
 
 namespace MyChronicle.Domain
 {
-    public enum FileType { Image, Audio, Document }
+    public enum FileType { Image, Audio, Document, ProfileImage }
     public enum FileExtension { jpg, png, mp3, pdf, docx }
     public class File
     {

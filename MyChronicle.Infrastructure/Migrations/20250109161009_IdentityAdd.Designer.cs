@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyChronicle.Infrastructure;
 
@@ -11,9 +12,11 @@ using MyChronicle.Infrastructure;
 namespace MyChronicle.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250109161009_IdentityAdd")]
+    partial class IdentityAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,6 +157,32 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MyChronicle.Domain.AccessToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("Expired")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AccessTokens");
+                });
+
             modelBuilder.Entity("MyChronicle.Domain.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -166,10 +195,6 @@ namespace MyChronicle.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -177,8 +202,13 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<Guid?>("FamilyTreePermisionId")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -214,8 +244,6 @@ namespace MyChronicle.Infrastructure.Migrations
                         .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FamilyTreePermisionId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -341,6 +369,35 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.ToTable("Persons");
                 });
 
+            modelBuilder.Entity("MyChronicle.Domain.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("Expired")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("MyChronicle.Domain.Relation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -369,6 +426,38 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.HasIndex("PersonId_2");
 
                     b.ToTable("Relations");
+                });
+
+            modelBuilder.Entity("MyChronicle.Domain.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("FamilyTreePermisionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(255)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(255)");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(255)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FamilyTreePermisionId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -422,11 +511,15 @@ namespace MyChronicle.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyChronicle.Domain.AppUser", b =>
+            modelBuilder.Entity("MyChronicle.Domain.AccessToken", b =>
                 {
-                    b.HasOne("MyChronicle.Domain.FamilyTreePermision", null)
-                        .WithMany("Users")
-                        .HasForeignKey("FamilyTreePermisionId");
+                    b.HasOne("MyChronicle.Domain.User", "User")
+                        .WithMany("AkcessTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTreePermision", b =>
@@ -462,6 +555,17 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Navigation("FamilyTree");
                 });
 
+            modelBuilder.Entity("MyChronicle.Domain.RefreshToken", b =>
+                {
+                    b.HasOne("MyChronicle.Domain.User", "User")
+                        .WithMany("RefreshToken")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MyChronicle.Domain.Relation", b =>
                 {
                     b.HasOne("MyChronicle.Domain.Person", "Person_1")
@@ -479,6 +583,13 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Navigation("Person_1");
 
                     b.Navigation("Person_2");
+                });
+
+            modelBuilder.Entity("MyChronicle.Domain.User", b =>
+                {
+                    b.HasOne("MyChronicle.Domain.FamilyTreePermision", null)
+                        .WithMany("Users")
+                        .HasForeignKey("FamilyTreePermisionId");
                 });
 
             modelBuilder.Entity("MyChronicle.Domain.FamilyTree", b =>
@@ -500,6 +611,13 @@ namespace MyChronicle.Infrastructure.Migrations
                     b.Navigation("RelationsAsPerson1");
 
                     b.Navigation("RelationsAsPerson2");
+                });
+
+            modelBuilder.Entity("MyChronicle.Domain.User", b =>
+                {
+                    b.Navigation("AkcessTokens");
+
+                    b.Navigation("RefreshToken");
                 });
 #pragma warning restore 612, 618
         }

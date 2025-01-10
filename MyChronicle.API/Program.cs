@@ -1,8 +1,12 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using MyChronicle.API.Services;
 using MyChronicle.Application.FamilyTrees;
+using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,12 +14,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile("connections.json", optional: true, reloadOnChange: true)
+    .AddJsonFile("local.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    opt.Filters.Add(new AuthorizeFilter(policy));
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -47,6 +56,8 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Create>();
 
+builder.Services.AddIdentityServices(builder.Configuration);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -58,6 +69,7 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors("CorsPolicy");
 
@@ -69,8 +81,10 @@ var service = scope.ServiceProvider;
 try
 {
     var context = service.GetRequiredService<DataContext>();
+    var userManager = service.GetRequiredService<UserManager<AppUser>>();
+
     context.Database.Migrate();
-    await Seed.SeedData(context);
+    await Seed.SeedData(context, userManager);
 }
 catch (Exception ex)
 {

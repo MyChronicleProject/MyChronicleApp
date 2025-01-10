@@ -11,6 +11,6 @@ namespace MyChronicle.Domain
 
         [JsonIgnore]
         public FamilyTree FamilyTree { get; set; } = null!;
-        public ICollection<User> Users { get; set; } = [];
+        public ICollection<AppUser> Users { get; set; } = [];
     }
 }
