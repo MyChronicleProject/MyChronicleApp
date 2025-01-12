@@ -34,6 +34,7 @@ namespace MyChronicle.API.Controllers
                 return new UserDTO
                 {
                     UserName = user.UserName,
+                    DisplayName = user.DisplayName,
                     Token = _tokenService.CreateToken(user)
                 };
             }
@@ -80,6 +81,7 @@ namespace MyChronicle.API.Controllers
             return new UserDTO
             {
                 UserName = user.UserName,
+                DisplayName = user.DisplayName,
                 Token = _tokenService.CreateToken(user)
             };
         }
