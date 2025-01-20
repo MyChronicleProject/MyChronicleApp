@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace MyChronicle.Domain
 {
@@ -9,7 +10,7 @@ namespace MyChronicle.Domain
         [Column(TypeName = "VARCHAR(255)")]
         public string Name { get; set; }
 
-
+        [JsonIgnore]
         public ICollection<FamilyTreePermision> FamilyTreePermisions { get; set; } = [];
         public ICollection<Person> Persons { get; set; } = [];
     }

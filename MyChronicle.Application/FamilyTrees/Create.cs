@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
 
@@ -10,6 +11,7 @@ namespace MyChronicle.Application.FamilyTrees
         public class Command : IRequest<Result<Unit>>
         {
             public required FamilyTreeDTO FamilyTreeDTO { get; set; }
+            public required string OwnerId { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -37,6 +39,17 @@ namespace MyChronicle.Application.FamilyTrees
                 };
 
                 _context.FamilyTrees.Add(familyTree);
+
+                var user = await _context.Users.FirstAsync(user => user.Id == request.OwnerId);
+
+                var familyTreePermission = new FamilyTreePermision
+                {
+                    AppUser = user,
+                    FamilyTree = familyTree
+                };
+
+                _context.FamilyTreePermisions.Add(familyTreePermission);
+
                 var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result) return Result<Unit>.Failure("Failed to create FamilyTree");
