@@ -20,7 +20,10 @@ namespace MyChronicle.Application.FamilyTrees
 
             public async Task<Result<List<FamilyTree>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var result = await _context.FamilyTrees.ToListAsync();
+                var result = await _context.FamilyTrees
+                    .Include(ft => ft.FamilyTreePermisions)
+                    .ThenInclude(ftp => ftp.AppUser)
+                    .ToListAsync();
                 return Result<List<FamilyTree>>.Success(result);
             }
         }

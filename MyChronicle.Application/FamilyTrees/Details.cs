@@ -24,7 +24,9 @@ namespace MyChronicle.Application.FamilyTrees
             {
                 var familyTree = await _context.FamilyTrees
                     .Include(ft => ft.Persons)
-                    .FirstAsync(ft => ft.Id == request.Id);
+                    .Include(ft => ft.FamilyTreePermisions)
+                    .ThenInclude(ftp => ftp.AppUser)
+                    .FirstOrDefaultAsync(ft => ft.Id == request.Id);
                 if (familyTree == null) return Result<FamilyTree>.Failure($"The FamilyTree with Id {request.Id} could not be found", ErrorCategory.NotFound);
 
                 return Result<FamilyTree>.Success(familyTree);
