@@ -5,6 +5,7 @@ namespace MyChronicle.Infrastructure
 {
     public class Seed
     {
+        readonly static byte[] BYTE_ARRAY = Convert.FromBase64String("SGVsbG8sIFdvcmxkIQ==");
         public static async Task SeedData(DataContext context, UserManager<AppUser> userManager)
         {
             await SeedFamilyTrees(context);
@@ -17,7 +18,7 @@ namespace MyChronicle.Infrastructure
 
             var familyTrees = new List<FamilyTree>
             {
-                new FamilyTree { Name = "Example" }
+                new FamilyTree { Name = "Example", Layout = BYTE_ARRAY }
             };
 
             await context.FamilyTrees.AddRangeAsync(familyTrees);
