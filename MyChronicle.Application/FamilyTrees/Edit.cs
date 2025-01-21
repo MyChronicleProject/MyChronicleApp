@@ -40,6 +40,7 @@ namespace MyChronicle.Application.FamilyTrees
                 }
 
                 familyTree.Name = request.FamilyTree.Name ?? familyTree.Name;
+                familyTree.Layout = request.FamilyTree.Layout ?? familyTree.Layout;
 
                 var result = await _context.SaveChangesAsync() > 0;
 

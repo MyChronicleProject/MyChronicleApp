@@ -35,7 +35,8 @@ namespace MyChronicle.Application.FamilyTrees
                 var familyTree = new FamilyTree
                 {
                     Id = request.FamilyTreeDTO.Id,
-                    Name = request.FamilyTreeDTO.Name
+                    Name = request.FamilyTreeDTO.Name,
+                    Layout = request.FamilyTreeDTO.Layout
                 };
 
                 _context.FamilyTrees.Add(familyTree);
