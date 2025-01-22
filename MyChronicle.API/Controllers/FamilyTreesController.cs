@@ -68,7 +68,7 @@ namespace MyChronicle.API.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var ft = await _mediator.Send(new Details.Query { Id = treeId });
-            if (ft.Value != null && ft.Value.FamilyTreePermisions.Where(ftp => ftp.AppUser.Id == userId).First().Role != Role.Autor)
+            if (ft.Value != null && ft.Value.FamilyTreePermisions.Where(ftp => ftp.AppUser.Id == userId).First().Role != Role.Author)
             {
                 return Forbid();
             }
@@ -85,7 +85,7 @@ namespace MyChronicle.API.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var ft = await _mediator.Send(new Details.Query { Id = treeId });
-            if (ft.Value != null && ft.Value.FamilyTreePermisions.Where(ftp => ftp.AppUser.Id == userId).First().Role != Role.Autor)
+            if (ft.Value != null && ft.Value.FamilyTreePermisions.Where(ftp => ftp.AppUser.Id == userId).First().Role != Role.Author)
             {
                 return Forbid();
             }

@@ -46,7 +46,8 @@ namespace MyChronicle.Application.FamilyTrees
                 var familyTreePermission = new FamilyTreePermision
                 {
                     AppUser = user,
-                    FamilyTree = familyTree
+                    FamilyTree = familyTree,
+                    Role = Role.Author
                 };
 
                 _context.FamilyTreePermisions.Add(familyTreePermission);

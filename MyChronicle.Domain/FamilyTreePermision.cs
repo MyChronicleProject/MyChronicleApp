@@ -2,7 +2,7 @@
 
 namespace MyChronicle.Domain
 {
-    public enum Role { Autor, Guest }
+    public enum Role { Author, Guest }
     public class FamilyTreePermision
     {
         public Guid Id { get; set; }
