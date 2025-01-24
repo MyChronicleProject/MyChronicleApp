@@ -1,30 +1,21 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
 
 namespace MyChronicle.Application.FamilyTrees
 {
-    public class Create
+    public class Share
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public required FamilyTreeDTO FamilyTreeDTO { get; set; }
-            public required string OwnerId { get; set; }
-        }
-
-        public class CommandValidator : AbstractValidator<Command>
-        {
-            public CommandValidator() {
-                RuleFor(x => x.FamilyTreeDTO).SetValidator(new FamilyTreeDTOValidator());
-            }
+            public required Guid FamilyTreeId { get; set; }
+            public required string UserId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
-
             public Handler(DataContext context)
             {
                 _context = context;
@@ -32,32 +23,28 @@ namespace MyChronicle.Application.FamilyTrees
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var familyTree = new FamilyTree
+                var familyTree = await _context.FamilyTrees.FirstOrDefaultAsync(ft => ft.Id == request.FamilyTreeId);
+
+                if (familyTree == null)
                 {
-                    Id = request.FamilyTreeDTO.Id,
-                    Name = request.FamilyTreeDTO.Name,
-                    Layout = request.FamilyTreeDTO.Layout
-                };
+                    return Result<Unit>.Failure($"Failed to find FamilyTree with Id {request.FamilyTreeId}", category: ErrorCategory.NotFound);
+                }
 
-                _context.FamilyTrees.Add(familyTree);
-
-                var user = await _context.Users.FirstAsync(user => user.Id == request.OwnerId);
+                var user = await _context.Users.FirstAsync(user => user.Id == request.UserId);
 
                 var familyTreePermission = new FamilyTreePermision
                 {
                     AppUser = user,
                     FamilyTree = familyTree,
-                    Role = Role.Author
+                    Role = Role.Guest
                 };
 
                 _context.FamilyTreePermisions.Add(familyTreePermission);
-
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure("Failed to create FamilyTree");
+                if (!result) return Result<Unit>.Failure("Failed to create FamilyTreePermission");
                 return Result<Unit>.Success(Unit.Value);
             }
-
         }
     }
 }

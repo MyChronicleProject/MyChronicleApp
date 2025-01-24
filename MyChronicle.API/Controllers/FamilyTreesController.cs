@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using MyChronicle.Application;
 using MyChronicle.Application.FamilyTrees;
 using MyChronicle.Domain;
@@ -23,7 +24,11 @@ namespace MyChronicle.API.Controllers
 
             if (result.IsSuccess && result.Value != null)
             {
-                var authorizedResults = result.Value.Where(ft => ft.FamilyTreePermisions.Any(ftp => ftp.AppUser.Id == userId));
+                var authorizedResults = result.Value.Where(ft => 
+                    ft.FamilyTreePermisions.Any(ftp => 
+                        ftp.AppUser.Id == userId && (ftp.Role == Role.Author || ftp.Role == Role.Guest)
+                    )
+                );
                 return Ok(authorizedResults);
             }
 
@@ -40,7 +45,9 @@ namespace MyChronicle.API.Controllers
 
             if (result.IsSuccess && result.Value != null)
             {
-                if (result.Value.FamilyTreePermisions.Any(ftp => ftp.AppUser.Id == userId))
+                if (result.Value.FamilyTreePermisions.Any(ftp => 
+                    ftp.AppUser.Id == userId && (ftp.Role == Role.Author || ftp.Role == Role.Guest)
+                ))
                 {
                     return Ok(result.Value);
                 }
@@ -63,12 +70,26 @@ namespace MyChronicle.API.Controllers
             return BadRequest(result.ErrorMsg!.Message);
         }
 
+        [HttpPost("{treeId}/share")]
+        public async Task<IActionResult> ShareFamilyTree(Guid treeId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await _mediator.Send(new Share.Command { FamilyTreeId = treeId, UserId = userId });
+
+            if (!result.IsSuccess && result.ErrorMsg!.Category == ErrorCategory.NotFound) return NotFound(result.ErrorMsg!.Message);
+            if (result.IsSuccess) return Ok(result.Value);
+            return BadRequest(result.ErrorMsg!.Message);
+        }
+
+
         [HttpPut("{treeId}")]
         public async Task<IActionResult> PutFamilyTree(Guid treeId, FamilyTree familyTree)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var ft = await _mediator.Send(new Details.Query { Id = treeId });
-            if (ft.Value != null && ft.Value.FamilyTreePermisions.Where(ftp => ftp.AppUser.Id == userId).First().Role != Role.Autor)
+            if (ft.Value != null && ft.Value.FamilyTreePermisions.Where(ftp => 
+                ftp.AppUser.Id == userId).First().Role != Role.Author
+            )
             {
                 return Forbid();
             }
@@ -85,7 +106,9 @@ namespace MyChronicle.API.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var ft = await _mediator.Send(new Details.Query { Id = treeId });
-            if (ft.Value != null && ft.Value.FamilyTreePermisions.Where(ftp => ftp.AppUser.Id == userId).First().Role != Role.Autor)
+            if (ft.Value != null && ft.Value.FamilyTreePermisions.Where(ftp => 
+                ftp.AppUser.Id == userId).First().Role != Role.Author
+            )
             {
                 return Forbid();
             }
