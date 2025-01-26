@@ -7,7 +7,7 @@ namespace MyChronicle.Application.FamilyTrees
         public FamilyTreeDTOValidator()
         {
             RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");
-            RuleFor(x => x.Layout).NotEmpty().WithMessage("Layout is required");
+            //RuleFor(x => x.Layout).NotEmpty().WithMessage("Layout is required");
         }
     }
 }

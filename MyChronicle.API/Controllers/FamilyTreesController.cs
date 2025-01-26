@@ -13,8 +13,8 @@ namespace MyChronicle.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetFamilyTrees()
         {
-            var result = await Mediator.Send(new List.Query());
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await Mediator.Send(new List.Query { UserId = userId });
 
             if (result.IsSuccess && result.Value != null)
             {

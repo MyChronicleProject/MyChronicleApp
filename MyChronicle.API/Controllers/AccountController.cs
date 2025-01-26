@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyChronicle.API.DTOs;
 using MyChronicle.API.Services;
+using MyChronicle.Application;
 using MyChronicle.Domain;
 using System.Security.Claims;
 
@@ -85,5 +86,50 @@ namespace MyChronicle.API.Controllers
                 Token = _tokenService.CreateToken(user)
             };
         }
+
+        [Authorize]
+        [HttpPut("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePassword)
+        {
+            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+            if (user == null)
+            {
+                return Unauthorized("Nie znaleziono zalogowanego użytkownika.");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, changePassword.Password, changePassword.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest(new { Message = "Nie udało się zmienić hasła.", Errors = errors });
+            }
+            else 
+            {
+                return Ok(new { Message = "Hasło zostało zmienione pomyślnie." });
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("DeleteAccount")]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+            if (user == null)
+            {
+                return Unauthorized("Nie znaleziono zalogowanego użytkownika.");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest(new { Message = "Nie udało się usunąć konta.", Errors = errors });
+            }
+
+            return Ok(new { Message = "Konto zostało usunięte pomyślnie." });
+        }
+
     }
 }

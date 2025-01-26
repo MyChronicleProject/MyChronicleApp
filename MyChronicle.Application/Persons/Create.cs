@@ -7,7 +7,7 @@ namespace MyChronicle.Application.Persons
 {
     public class Create
     {
-        public class Command : IRequest<Result<Unit>>
+        public class Command : IRequest<Result<Guid>>
         {
             public required Guid FamilyTreeId { get; set; }
             public required PersonDTO PersonDTO { get; set; }
@@ -21,7 +21,7 @@ namespace MyChronicle.Application.Persons
             }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<Guid>>
         {
             private readonly DataContext _context;
 
@@ -30,15 +30,15 @@ namespace MyChronicle.Application.Persons
                 _context = context;
             }
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Guid>> Handle(Command request, CancellationToken cancellationToken)
             {
                 if (request.PersonDTO.FamilyTreeId != request.FamilyTreeId)
                 {
-                    return Result<Unit>.Failure($"Not matching Id. Request FamilyTreeId was {request.FamilyTreeId}. Request Person.FamilyTreeId was {request.PersonDTO.FamilyTreeId}");
+                    return Result<Guid>.Failure($"Not matching Id. Request FamilyTreeId was {request.FamilyTreeId}. Request Person.FamilyTreeId was {request.PersonDTO.FamilyTreeId}");
                 }
 
                 var familyTree = await _context.FamilyTrees.FindAsync(request.FamilyTreeId);
-                if (familyTree == null) return Result<Unit>.Failure($"The FamilyTree with Id {request.FamilyTreeId} could not be found", ErrorCategory.NotFound);
+                if (familyTree == null) return Result<Guid>.Failure($"The FamilyTree with Id {request.FamilyTreeId} could not be found", ErrorCategory.NotFound);
 
 
                 var person = new Person
@@ -61,8 +61,8 @@ namespace MyChronicle.Application.Persons
                 _context.Persons.Add(person);
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure("Failed to create Person");
-                return Result<Unit>.Success(Unit.Value);
+                if (!result) return Result<Guid>.Failure("Failed to create Person");
+                return Result<Guid>.Success(person.Id);
             }
         }
     }

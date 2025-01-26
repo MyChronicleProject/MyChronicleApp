@@ -2,12 +2,13 @@
 using MediatR;
 using MyChronicle.Domain;
 using MyChronicle.Infrastructure;
+using System;
 
 namespace MyChronicle.Application.Relations
 {
     public class Create
     {
-        public class Command : IRequest<Result<Unit>>
+        public class Command : IRequest<Result<Guid>>
         {
             public required Guid PersonId { get; set; }
             public required RelationDTO RelationDTO {  get; set; }
@@ -21,7 +22,7 @@ namespace MyChronicle.Application.Relations
             }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<Guid>>
         {
             private readonly DataContext _context;
 
@@ -30,23 +31,23 @@ namespace MyChronicle.Application.Relations
                 _context = context;
             }
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Guid>> Handle(Command request, CancellationToken cancellationToken)
             {
                 if (request.RelationDTO.PersonId_1 != request.PersonId && request.RelationDTO.PersonId_2 != request.PersonId)
                 {
-                    return Result<Unit>.Failure($"Not matching Id. Request PeronsId was {request.PersonId}. Request RelationId.PersonId_1 was {request.RelationDTO.PersonId_1}. Request RelationId.PersonId_2 was {request.RelationDTO.PersonId_2}.");
+                    return Result<Guid>.Failure($"Not matching Id. Request PeronsId was {request.PersonId}. Request RelationId.PersonId_1 was {request.RelationDTO.PersonId_1}. Request RelationId.PersonId_2 was {request.RelationDTO.PersonId_2}.");
                 }
 
                 if (request.RelationDTO.PersonId_1 == request.RelationDTO.PersonId_2)
                 {
-                    return Result<Unit>.Failure("You cannot create a relationship between one person");
+                    return Result<Guid>.Failure("You cannot create a relationship between one person");
                 }
 
                 var person1 = await _context.Persons.FindAsync(request.RelationDTO.PersonId_1);
                 var person2 = await _context.Persons.FindAsync(request.RelationDTO.PersonId_2);
 
-                if (person1 == null) return Result<Unit>.Failure($"The Person with Id {request.RelationDTO.PersonId_1} could not be found", ErrorCategory.NotFound);
-                if (person2 == null) return Result<Unit>.Failure($"The Person with Id {request.RelationDTO.PersonId_2} could not be found", ErrorCategory.NotFound);
+                if (person1 == null) return Result<Guid>.Failure($"The Person with Id {request.RelationDTO.PersonId_1} could not be found", ErrorCategory.NotFound);
+                if (person2 == null) return Result<Guid>.Failure($"The Person with Id {request.RelationDTO.PersonId_2} could not be found", ErrorCategory.NotFound);
 
                 var relation = new Relation
                 {
@@ -63,8 +64,8 @@ namespace MyChronicle.Application.Relations
                 _context.Relations.Add(relation);
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure("Failed to create the Relation");
-                return Result<Unit>.Success(Unit.Value);
+                if (!result) return Result<Guid>.Failure("Failed to create the Relation");
+                return Result<Guid>.Success(relation.Id);
             }
         }
 

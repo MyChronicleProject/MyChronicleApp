@@ -14,5 +14,8 @@ namespace MyChronicle.Domain
         [JsonIgnore]
         public ICollection<FamilyTreePermision> FamilyTreePermisions { get; set; } = [];
         public ICollection<Person> Persons { get; set; } = [];
+        [NotMapped]
+        public Role CurrentUserRole { get; set; }
+
     }
 }
