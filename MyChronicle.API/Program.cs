@@ -68,13 +68,12 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("CorsPolicy");
 
 app.MapControllers();
-app.UseCors("CorsPolicy");
 using var scope = app.Services.CreateScope();
 var service = scope.ServiceProvider;
 
